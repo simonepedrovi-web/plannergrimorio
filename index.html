@@ -1,180 +1,503 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planner Ritualístico — Grimório Completo</title>
-    <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json">
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Great+Vibes&family=Cinzel:wght@400;600&family=UnifrakturCook:700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Great+Vibes&family=Cinzel:wght@400;600&family=UnifrakturCook:700&display=swap');
 
-body{
-  font-family:'Cinzel',serif;
-  background:radial-gradient(circle at top,#6b003f,#3a0023,#1a0010);
-  margin:0;padding:0;
-  color:#f3e6c8;
-}
+    body {
+      font-family: 'Cinzel', serif;
+      background: radial-gradient(circle at top, #6b003f, #3a0023, #1a0010);
+      margin: 0;
+      padding: 0;
+      color: #f3e6c8;
+      min-height: 100vh;
+    }
 
-body::before{
-  content:'☾ ✶ ⚝ ☿ ♀ ♂ ⚗ 🜃 🜁 🜂 🜄';
-  position:fixed; inset:0;
-  opacity:0.06; font-size:140px;
-  display:flex; align-items:center; justify-content:center;
-  pointer-events:none;
-}
+    body::before {
+      content: '☾ ✶ ⚝ ☿ ♀ ♂ ⚗ 🜃 🜁 🜂 🜄';
+      position: fixed;
+      inset: 0;
+      opacity: 0.06;
+      font-size: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
 
-#overlay{position:fixed;inset:0;background:linear-gradient(135deg,#e7dff0,#cbb7d8);display:flex;align-items:center;justify-content:center}
-#container{background:#2a0018;padding:24px;border-radius:18px;width:380px;border:2px solid #d4af37}
+    /* RESPONSIVIDADE - Container principal */
+    #container {
+      background: #2a0018;
+      padding: 24px;
+      border-radius: 18px;
+      width: 90%;
+      max-width: 380px;
+      border: 2px solid #d4af37;
+      margin: 20px auto;
+      box-sizing: border-box;
+    }
 
-#capa,#planner,#prospera{display:none;padding:24px}
+    #capa, #planner, #prospera {
+      display: none;
+      padding: 20px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-h2,h3{color:#d4af37;font-family:'UnifrakturCook','Great Vibes',cursive;font-size:32px}
+    h2, h3 {
+      color: #d4af37;
+      font-family: 'UnifrakturCook', 'Great Vibes', cursive;
+      font-size: 32px;
+    }
 
-button{margin-top:10px;background:linear-gradient(135deg,#3a001f,#6b0040);color:#f5e6b8;border:1px solid #d4af37;padding:8px 18px;border-radius:22px;cursor:pointer;font-family:'Cinzel',serif}
-input,select,textarea{width:100%;margin-bottom:8px}
+    button {
+      margin-top: 10px;
+      background: linear-gradient(135deg, #3a001f, #6b0040);
+      color: #f5e6b8;
+      border: 1px solid #d4af37;
+      padding: 8px 18px;
+      border-radius: 22px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+    }
 
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
-.dia{background:#fdfaf6;min-height:140px;border-radius:12px;padding:8px;cursor:pointer;position:relative;color:#c2187a}
-.dias-semana div{text-align:center;font-weight:bold}
+    input, select, textarea {
+      width: 100%;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
 
-.preview{font-size:11px;margin-top:6px;font-style:italic}
-.estrela{position:absolute;bottom:6px;right:8px;font-size:14px}
-.iconesTopo{position:absolute;top:6px;right:8px;display:flex;gap:4px}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
 
-.top-nav{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
-.legenda{font-size:12px;margin:8px 0;display:flex;gap:12px}
-            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Great+Vibes&family=Cinzel:wght@400;600&family=UnifrakturCook:700&display=swap');
+    .dia {
+      background: #fdfaf6;
+      min-height: 120px;
+      border-radius: 12px;
+      padding: 6px;
+      cursor: pointer;
+      position: relative;
+      color: #c2187a;
+      font-size: 14px;
+    }
 
-body{
-  font-family:'Cinzel',serif;
-  background:radial-gradient(circle at top,#6b003f,#3a0023,#1a0010);
-  margin:0;padding:0;
-  color:#f3e6c8;
-}
+    .dias-semana div {
+      text-align: center;
+      font-weight: bold;
+      padding: 8px 0;
+    }
 
-body::before{
-  content:'☾ ✶ ⚝ ☿ ♀ ♂ ⚗ 🜃 🜁 🜂 🜄';
-  position:fixed;
-  inset:0;
-  opacity:0.05;
-  font-size:140px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-}
+    .preview {
+      font-size: 11px;
+      margin-top: 6px;
+      font-style: italic;
+      word-break: break-word;
+    }
 
-main{
-  display:grid;
-  grid-template-columns: 2.2fr 1fr;
-  gap:24px;
-  max-width:1200px;
-  margin:40px auto;
-  padding:0 16px;
-}
+    .estrela {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      font-size: 14px;
+    }
 
-section{
-  background:#2a0018;
-  padding:28px;
-  border-radius:22px;
-  box-shadow:0 0 40px rgba(0,0,0,.6), inset 0 0 30px rgba(212,175,55,.12);
-  border:2px solid #d4af37;
-}
+    .iconesTopo {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      font-size: 12px;
+    }
 
-h1,h2,h3{
-  color:#d4af37;
-  font-family:'UnifrakturCook','Great Vibes',cursive;
-}
+    .top-nav {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
 
-h1{font-size:44px;text-align:center}
-h2{font-size:30px;margin-top:0}
-h3{font-size:22px}
+    .legenda {
+      font-size: 12px;
+      margin: 8px 0;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-.texto{
-  color:#6b2f8a;
-  font-size:14.5px;
-  line-height:1.7;
-  text-align:justify;
-}
+    /* MAIN RESPONSIVO */
+    main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
 
-.livro label{
-  display:block;
-  margin-top:14px;
-  font-size:13px;
-}
+    section {
+      background: #2a0018;
+      padding: 20px;
+      border-radius: 22px;
+      box-shadow: 0 0 40px rgba(0,0,0,.6), inset 0 0 30px rgba(212,175,55,.12);
+      border: 2px solid #d4af37;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-.livro input{
-  width:100%;
-  box-sizing:border-box;
-  padding:8px 10px;
-  border-radius:10px;
-  border:1px solid #d4af37;
-  background:#f8f1e8;
-  font-family:'Cinzel',serif;
-}
+    h1, h2, h3 {
+      color: #d4af37;
+      font-family: 'UnifrakturCook', 'Great Vibes', cursive;
+    }
 
-.caixa{
-  box-sizing:border-box;
+    h1 {
+      font-size: 36px;
+      text-align: center;
+      margin: 10px 0;
+    }
 
-  background:#f4e8f6;
-  color:#3a0023;
-  padding:18px;
-  border-radius:16px;
-  margin-top:18px;
-}
+    h2 {
+      font-size: 28px;
+      margin-top: 0;
+    }
 
-.lateral{
-  position:sticky;
-  top:24px;
-}
+    h3 {
+      font-size: 20px;
+    }
 
-.lunar{
-  background:#1f0012;
-  border:2px dashed #d4af37;
-  padding:20px;
-  border-radius:18px;
-  font-size:14px;
-}
+    .texto {
+      color: #6b2f8a;
+      font-size: 14.5px;
+      line-height: 1.7;
+      text-align: justify;
+    }
 
-.lunar strong{color:#d4af37}
+    .livro label {
+      display: block;
+      margin-top: 14px;
+      font-size: 13px;
+    }
 
-.tabela{width:100%;border-collapse:collapse;margin-top:10px}
-.tabela th,.tabela td{border-bottom:1px solid #d4af37;padding:6px}
-.tabela input{
-  width:100%;
-  box-sizing:border-box;
-  border:none;
-  background:transparent;
-  font-family:'Cinzel',serif;
-}
-button{margin-top:8px;background:#6b003f;color:#f3e6c8;border:1px solid #d4af37;border-radius:10px;padding:6px 10px;cursor:pointer}
-button.remover{background:#3a0023;color:#d4af37}
+    .livro input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d4af37;
+      background: #f8f1e8;
+      font-family: 'Cinzel', serif;
+    }
 
+    .caixa {
+      box-sizing: border-box;
+      background: #f4e8f6;
+      color: #3a0023;
+      padding: 15px;
+      border-radius: 16px;
+      margin-top: 18px;
+      overflow-x: auto;
+    }
 
-/* cálculos mágicos */
-.total-secao{
-  margin-top:10px;
-  font-size:14px;
-  color:#6b003f;
-  font-weight:600;
-}
-.saldo{
-  margin-top:20px;
-  padding:14px;
-  background:#f0dff0;
-  border-radius:14px;
-  color:#3a0023;
-  font-weight:600;
-}
-.grafico{
-  margin-top:20px;
-  background:#1f0012;
-  border:1px solid #d4af37;
-  border-radius:16px;
-  padding:14px;
-  color:#d4af37;
-  font-size:13px;
-}
+    .lateral {
+      position: static;
+      top: auto;
+    }
+
+    .lunar {
+      background: #1f0012;
+      border: 2px dashed #d4af37;
+      padding: 20px;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+
+    .lunar strong {
+      color: #d4af37;
+    }
+
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      min-width: 300px;
+    }
+
+    .tabela th, .tabela td {
+      border-bottom: 1px solid #d4af37;
+      padding: 6px;
+      font-size: 13px;
+    }
+
+    .tabela input {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+    }
+
+    .total-secao {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6b003f;
+      font-weight: 600;
+    }
+
+    .saldo {
+      margin-top: 20px;
+      padding: 14px;
+      background: #f0dff0;
+      border-radius: 14px;
+      color: #3a0023;
+      font-weight: 600;
+    }
+
+    .grafico {
+      margin-top: 20px;
+      background: #1f0012;
+      border: 1px solid #d4af37;
+      border-radius: 16px;
+      padding: 14px;
+      color: #d4af37;
+      font-size: 13px;
+    }
+
+    /* MODAL RESPONSIVO */
+    #modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    #modal > div {
+      background: #fdfaf4;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
+
+    /* OVERLAY RESPONSIVO */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #e7dff0, #cbb7d8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    /* Botão instalar */
+    #btnInstalar {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      display: none;
+    }
+
+    /* MEDIA QUERIES PARA DIFERENTES TELAS */
+
+    /* Tablets (768px pra cima) */
+    @media (min-width: 768px) {
+      main {
+        grid-template-columns: 1.5fr 1fr;
+        margin: 30px auto;
+      }
+      
+      .lateral {
+        position: sticky;
+        top: 24px;
+      }
+      
+      .grid {
+        gap: 10px;
+      }
+      
+      .dia {
+        min-height: 140px;
+        padding: 8px;
+        font-size: 16px;
+      }
+      
+      h1 {
+        font-size: 44px;
+      }
+      
+      h2 {
+        font-size: 30px;
+      }
+      
+      h3 {
+        font-size: 22px;
+      }
+    }
+
+    /* Desktop grande (992px pra cima) */
+    @media (min-width: 992px) {
+      main {
+        grid-template-columns: 2.2fr 1fr;
+        margin: 40px auto;
+      }
+      
+      .caixa {
+        padding: 18px;
+      }
+      
+      section {
+        padding: 28px;
+      }
+    }
+
+    /* Telas muito pequenas (480px pra baixo) */
+    @media (max-width: 480px) {
+      body::before {
+        font-size: 80px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      h2, h3 {
+        font-size: 24px;
+      }
+      
+      .grid {
+        gap: 4px;
+      }
+      
+      .dia {
+        min-height: 100px;
+        padding: 4px;
+        font-size: 12px;
+      }
+      
+      .dias-semana div {
+        font-size: 12px;
+        padding: 6px 0;
+      }
+      
+      .legenda {
+        font-size: 10px;
+        gap: 8px;
+      }
+      
+      .top-nav button {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+      
+      .iconesTopo {
+        font-size: 10px;
+        gap: 2px;
+      }
+      
+      .preview {
+        font-size: 9px;
+      }
+      
+      .estrela {
+        font-size: 12px;
+        bottom: 4px;
+        right: 4px;
+      }
+      
+      #container {
+        padding: 16px;
+      }
+      
+      #capa, #planner, #prospera {
+        padding: 15px;
+      }
+      
+      .tabela th, .tabela td {
+        padding: 4px;
+        font-size: 11px;
+      }
+      
+      .texto {
+        font-size: 13px;
+      }
+    }
+
+    /* Telas pequenas (600px pra baixo) - ajuste do calendário */
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(7, 1fr);
+      }
+      
+      .dia {
+        min-height: 80px;
+      }
+      
+      .iconesTopo {
+        flex-direction: column;
+        gap: 1px;
+      }
+    }
+
+    /* Orientação paisagem em celulares */
+    @media (max-height: 500px) and (orientation: landscape) {
+      #overlay {
+        align-items: flex-start;
+        padding-top: 20px;
+        overflow-y: auto;
+      }
+      
+      #container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .dia {
+        min-height: 60px;
+      }
+    }
+
+    /* Impressão */
+    @media print {
+      body::before {
+        display: none;
+      }
+      
+      button, #btnInstalar, .top-nav {
+        display: none !important;
+      }
+      
+      #capa, #planner, #prospera {
+        display: block !important;
+        box-shadow: none;
+        border: 1px solid #000;
+      }
+      
+      .dia {
+        border: 1px solid #ccc;
+        color: #000;
+      }
+    }
   </style>
 </head>
 <body>
@@ -671,6 +994,7 @@ if (salvo && salvo.nome) {
   capa.style.display = 'block';
   nomeCapa.textContent = `Salve, ${salvo.nome}`;
 }
+    
 </script>
 </body>
 </html>
