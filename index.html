@@ -671,6 +671,121 @@ if (salvo && salvo.nome) {
   capa.style.display = 'block';
   nomeCapa.textContent = `Salve, ${salvo.nome}`;
 }
+  /* ============================
+   RESPONSIVIDADE — MOBILE FIRST
+   NÃO ALTERA LÓGICA
+============================ */
+
+/* 📱 Celulares (até 768px) */
+@media (max-width: 768px) {
+
+  /* --- Ajustes gerais --- */
+  body::before{
+    font-size:80px;
+    opacity:0.04;
+  }
+
+  h1{font-size:30px}
+  h2{font-size:24px}
+  h3{font-size:18px}
+
+  #container{
+    width:90%;
+    padding:18px;
+  }
+
+  #capa,#planner,#prospera{
+    padding:16px;
+  }
+
+  button{
+    width:100%;
+    font-size:14px;
+  }
+
+  /* --- PLANNER --- */
+
+  /* Esconde dias da semana (não cabem no mobile) */
+  .dias-semana{
+    display:none;
+  }
+
+  /* Grid vira 2 colunas */
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  .dia{
+    min-height:120px;
+    font-size:13px;
+    padding:10px;
+  }
+
+  .preview{
+    font-size:10px;
+  }
+
+  .iconesTopo{
+    font-size:14px;
+  }
+
+  /* Modal ocupa quase toda a tela */
+  #modal > div{
+    width:92%;
+    max-height:90vh;
+    overflow-y:auto;
+  }
+
+  textarea{
+    font-size:13px;
+  }
+
+  /* --- LIVRO DA BRUXA PRÓSPERA --- */
+
+  main{
+    grid-template-columns:1fr;
+    margin:20px auto;
+    gap:20px;
+  }
+
+  .lateral{
+    position:static;
+  }
+
+  .caixa{
+    padding:14px;
+  }
+
+  .texto{
+    font-size:13.5px;
+  }
+
+  .tabela th,.tabela td{
+    font-size:12px;
+  }
+
+  .grafico{
+    font-size:12px;
+  }
+}
+
+/* 📲 Tablets (769px até 1024px) */
+@media (min-width: 769px) and (max-width: 1024px){
+
+  .grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  main{
+    grid-template-columns:1.6fr 1fr;
+  }
+
+  .dia{
+    min-height:130px;
+  }
+}
+
 </script>
 </body>
 </html>
