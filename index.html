@@ -619,6 +619,33 @@
       background: var(--color-digital-lavender);
     }
 
+    /* SEÇÃO DE NOTIFICAÇÕES NO MODAL */
+    .notificacoes-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .notificacoes-section label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-transformative-teal);
+      font-weight: 500;
+    }
+
+    .notificacoes-section input[type="time"],
+    .notificacoes-section input[type="number"] {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .notificacoes-section select {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
     /* MEDIA QUERIES - RESPONSIVIDADE */
     @media (min-width: 768px) {
       main {
@@ -819,6 +846,7 @@
   <button id="irProspera">💰 Livro da Bruxa Próspera</button>
   <div style="margin-top:30px;">
     <button id="btnAlterarNome" class="secondary">✏️ Alterar meus dados</button>
+    <button id="btnConfigNotificacoes" class="secondary">🔔 Configurar Notificações</button>
   </div>
 </div>
 
@@ -863,6 +891,27 @@
       <input type="time" id="notaHora" style="margin-bottom:16px;" />
       <textarea id="notaTexto" placeholder="Escreva sua nota aqui..." style="height:100px;width:100%;box-sizing:border-box;margin-bottom:20px;"></textarea>
       
+      <!-- SEÇÃO DE NOTIFICAÇÕES PARA A NOTA -->
+      <div class="notificacoes-section">
+        <label for="notificarNota">🔔 Receber lembrete desta nota?</label>
+        <select id="notificarNota">
+          <option value="nao">Não receber notificação</option>
+          <option value="sim">Sim, receber notificação</option>
+        </select>
+        
+        <div id="configNotificacao" style="display:none;">
+          <label for="tempoAntecedencia">Tempo de antecedência:</label>
+          <select id="tempoAntecedencia">
+            <option value="5">5 minutos antes</option>
+            <option value="15">15 minutos antes</option>
+            <option value="30">30 minutos antes</option>
+            <option value="60">1 hora antes</option>
+            <option value="120">2 horas antes</option>
+            <option value="1440">1 dia antes</option>
+          </select>
+        </div>
+      </div>
+      
       <!-- CAMPO: IMPRESSÕES E SENTIMENTOS -->
       <div class="sentimentos-section">
         <label for="sentimentos">💖 Impressões e Sentimentos</label>
@@ -874,6 +923,50 @@
         <button id="btnFechar" class="secondary">✖ Fechar</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIGURAÇÃO DE NOTIFICAÇÕES -->
+<div id="modalNotificacoes" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:2000; padding:20px;">
+  <div style="background:var(--color-bone-white); padding:24px; border-radius:var(--border-radius-lg); width:100%; max-width:500px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
+    <h3 style="color:var(--color-transformative-teal);margin-bottom:20px;">🔔 Configurar Notificações</h3>
+    
+    <div class="notificacoes-section">
+      <label for="notificacoesAtivas">📢 Ativar notificações?</label>
+      <select id="notificacoesAtivas">
+        <option value="sim">Sim, receber notificações</option>
+        <option value="nao">Não receber notificações</option>
+      </select>
+      
+      <label for="horaNotificacaoDiaria">⏰ Hora para notificação diária:</label>
+      <input type="time" id="horaNotificacaoDiaria" value="08:00">
+      
+      <label for="notificarSabas">🔥 Notificar sobre Sabás?</label>
+      <select id="notificarSabas">
+        <option value="sim">Sim, notificar sobre Sabás</option>
+        <option value="nao">Não notificar sobre Sabás</option>
+      </select>
+      
+      <label for="antecedenciaSabas">📅 Antecedência para Sabás:</label>
+      <select id="antecedenciaSabas">
+        <option value="1">1 dia antes</option>
+        <option value="2">2 dias antes</option>
+        <option value="3">3 dias antes</option>
+        <option value="7">1 semana antes</option>
+      </select>
+      
+      <label for="horaNotificacaoSabas">⏰ Hora para notificação de Sabás:</label>
+      <input type="time" id="horaNotificacaoSabas" value="09:00">
+    </div>
+    
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button id="btnSalvarConfigNotificacoes">💾 Salvar Configurações</button>
+      <button id="btnFecharNotificacoes" class="secondary">✖ Fechar</button>
+    </div>
+    
+    <p style="font-size:0.875rem;margin-top:15px;opacity:0.8;">
+      As notificações funcionam melhor com o aplicativo instalado.
+    </p>
   </div>
 </div>
 
@@ -969,6 +1062,10 @@ const btnInstalarPWA = document.getElementById('btnInstalarPWA');
 const btnPularInstalacao = document.getElementById('btnPularInstalacao');
 const btnInstalarAgora = document.getElementById('btnInstalarAgora');
 const btnAlterarNome = document.getElementById('btnAlterarNome');
+const btnConfigNotificacoes = document.getElementById('btnConfigNotificacoes');
+const modalNotificacoes = document.getElementById('modalNotificacoes');
+const btnFecharNotificacoes = document.getElementById('btnFecharNotificacoes');
+const btnSalvarConfigNotificacoes = document.getElementById('btnSalvarConfigNotificacoes');
 
 // ===== FLUXO DE INSTALAÇÃO =====
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -1021,6 +1118,47 @@ btnInstalarAgora.addEventListener('click', async () => {
   }
 });
 
+// ===== CONFIGURAÇÃO DE NOTIFICAÇÕES =====
+btnConfigNotificacoes.addEventListener('click', () => {
+  const config = load('configNotificacoes') || {
+    ativas: 'sim',
+    horaDiaria: '08:00',
+    notificarSabas: 'sim',
+    antecedenciaSabas: '1',
+    horaSabas: '09:00'
+  };
+  
+  document.getElementById('notificacoesAtivas').value = config.ativas;
+  document.getElementById('horaNotificacaoDiaria').value = config.horaDiaria;
+  document.getElementById('notificarSabas').value = config.notificarSabas;
+  document.getElementById('antecedenciaSabas').value = config.antecedenciaSabas;
+  document.getElementById('horaNotificacaoSabas').value = config.horaSabas;
+  
+  modalNotificacoes.style.display = 'flex';
+});
+
+btnFecharNotificacoes.addEventListener('click', () => {
+  modalNotificacoes.style.display = 'none';
+});
+
+btnSalvarConfigNotificacoes.addEventListener('click', () => {
+  const config = {
+    ativas: document.getElementById('notificacoesAtivas').value,
+    horaDiaria: document.getElementById('horaNotificacaoDiaria').value,
+    notificarSabas: document.getElementById('notificarSabas').value,
+    antecedenciaSabas: document.getElementById('antecedenciaSabas').value,
+    horaSabas: document.getElementById('horaNotificacaoSabas').value
+  };
+  
+  save('configNotificacoes', config);
+  
+  // Agendar notificações com novas configurações
+  agendarNotificacoes();
+  
+  modalNotificacoes.style.display = 'none';
+  alert('Configurações de notificações salvas!');
+});
+
 // ===== FUNÇÕES DE ARMAZENAMENTO =====
 function save(k, v) {
   localStorage.setItem(k, JSON.stringify(v));
@@ -1058,11 +1196,23 @@ document.getElementById('salvar').onclick = () => {
   };
 
   save('perfil', perfil);
-  solicitarNotificacao();
+  solicitarPermissaoNotificacao();
   nomeCapa.textContent = `Salve, ${perfil.nome}`;
   formOverlay.style.display = 'none';
   capa.style.display = 'block';
   localStorage.setItem('formPreenchido', 'true');
+  
+  // Inicializar configurações padrão de notificações
+  const configNotificacoes = load('configNotificacoes');
+  if (!configNotificacoes) {
+    save('configNotificacoes', {
+      ativas: 'sim',
+      horaDiaria: '08:00',
+      notificarSabas: 'sim',
+      antecedenciaSabas: '1',
+      horaSabas: '09:00'
+    });
+  }
 };
 
 // Botão para alterar dados
@@ -1099,7 +1249,204 @@ window.addEventListener('load', () => {
       .then(() => console.log('🌙 Service Worker registrado'))
       .catch(err => console.error('Erro no Service Worker:', err));
   }
+  
+  // Agendar notificações ao carregar
+  agendarNotificacoes();
 });
+
+// ===== FUNÇÕES DE NOTIFICAÇÃO =====
+
+// Solicitar permissão para notificações
+function solicitarPermissaoNotificacao() {
+  if (!('Notification' in window)) {
+    console.log('Este navegador não suporta notificações.');
+    return;
+  }
+  
+  if (Notification.permission === 'default') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Permissão para notificações concedida.');
+      }
+    });
+  }
+}
+
+// Função para agendar notificações
+function agendarNotificacoes() {
+  const config = load('configNotificacoes');
+  if (!config || config.ativas === 'nao') return;
+  
+  if (Notification.permission !== 'granted') return;
+  
+  // Agendar notificação diária
+  agendarNotificacaoDiaria(config);
+  
+  // Agendar notificações de Sabás
+  if (config.notificarSabas === 'sim') {
+    agendarNotificacoesSabas(config);
+  }
+  
+  // Verificar e agendar notificações de notas
+  agendarNotificacoesNotas();
+}
+
+// Agendar notificação diária
+function agendarNotificacaoDiaria(config) {
+  const horaNotificacao = config.horaDiaria.split(':');
+  const hora = parseInt(horaNotificacao[0]);
+  const minuto = parseInt(horaNotificacao[1]);
+  
+  const agora = new Date();
+  const dataNotificacao = new Date();
+  
+  dataNotificacao.setHours(hora, minuto, 0, 0);
+  
+  // Se já passou do horário hoje, agenda para amanhã
+  if (agora > dataNotificacao) {
+    dataNotificacao.setDate(dataNotificacao.getDate() + 1);
+  }
+  
+  const tempoParaNotificacao = dataNotificacao - agora;
+  
+  setTimeout(() => {
+    enviarNotificacaoDiaria();
+    // Agendar para o próximo dia
+    setInterval(enviarNotificacaoDiaria, 24 * 60 * 60 * 1000);
+  }, tempoParaNotificacao);
+}
+
+// Enviar notificação diária
+function enviarNotificacaoDiaria() {
+  if (Notification.permission !== 'granted') return;
+  
+  const hoje = new Date().toISOString().split('T')[0];
+  const notas = load('notas') || {};
+  const temNotas = Array.isArray(notas[hoje]) && notas[hoje].length > 0;
+  
+  let corpo = 'Lembre-se de registrar seus pensamentos e sentimentos hoje.';
+  
+  if (temNotas) {
+    corpo = 'Você tem notas registradas para hoje. Reveja-as para reflexão.';
+  }
+  
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification('🌙 Lembrete Diário do Grimório', {
+      body: corpo,
+      icon: 'icon-192.png',
+      tag: 'lembrete-diario'
+    });
+  });
+}
+
+// Agendar notificações de Sabás
+function agendarNotificacoesSabas(config) {
+  const antecedencia = parseInt(config.antecedenciaSabas);
+  const horaSabas = config.horaSabas.split(':');
+  const hora = parseInt(horaSabas[0]);
+  const minuto = parseInt(horaSabas[1]);
+  
+  const hoje = new Date().toISOString().split('T')[0];
+  
+  Object.keys(sabas2026).forEach(dataSabá => {
+    const dataSabáObj = new Date(dataSabá);
+    const dataNotificacao = new Date(dataSabáObj);
+    
+    // Subtrair dias de antecedência
+    dataNotificacao.setDate(dataNotificacao.getDate() - antecedencia);
+    
+    // Definir hora da notificação
+    dataNotificacao.setHours(hora, minuto, 0, 0);
+    
+    const agora = new Date();
+    
+    // Se a data de notificação já passou, não agendar
+    if (dataNotificacao < agora) return;
+    
+    const tempoParaNotificacao = dataNotificacao - agora;
+    
+    setTimeout(() => {
+      const sabá = sabas2026[dataSabá];
+      enviarNotificacaoSabá(sabá, antecedencia);
+    }, tempoParaNotificacao);
+  });
+}
+
+// Enviar notificação de Sabá
+function enviarNotificacaoSabá(sabá, antecedencia) {
+  if (Notification.permission !== 'granted') return;
+  
+  let mensagem = '';
+  if (antecedencia === 0) {
+    mensagem = `Hoje é ${sabá.nome}! ${sabá.significado}`;
+  } else {
+    mensagem = `Em ${antecedencia} dia(s) será ${sabá.nome}. ${sabá.significado}`;
+  }
+  
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification(`🔥 ${sabá.nome}`, {
+      body: mensagem,
+      icon: 'icon-192.png',
+      tag: `saba-${sabá.nome}`
+    });
+  });
+}
+
+// Agendar notificações para notas
+function agendarNotificacoesNotas() {
+  const notasComNotificacao = load('notasComNotificacao') || {};
+  
+  Object.keys(notasComNotificacao).forEach(dataISO => {
+    const notificacoes = notasComNotificacao[dataISO];
+    
+    notificacoes.forEach((notificacao, index) => {
+      const { horaNota, antecedencia, texto } = notificacao;
+      
+      const [horaStr, minutoStr] = horaNota.split(':');
+      const hora = parseInt(horaStr);
+      const minuto = parseInt(minutoStr);
+      
+      const dataNota = new Date(dataISO);
+      dataNota.setHours(hora, minuto, 0, 0);
+      
+      // Subtrair antecedência (em minutos)
+      const dataNotificacao = new Date(dataNota.getTime() - (antecedencia * 60 * 1000));
+      
+      const agora = new Date();
+      
+      // Se já passou, não agendar
+      if (dataNotificacao < agora) return;
+      
+      const tempoParaNotificacao = dataNotificacao - agora;
+      
+      setTimeout(() => {
+        enviarNotificacaoNota(texto, horaNota);
+        
+        // Remover notificação após disparar
+        notasComNotificacao[dataISO].splice(index, 1);
+        if (notasComNotificacao[dataISO].length === 0) {
+          delete notasComNotificacao[dataISO];
+        }
+        save('notasComNotificacao', notasComNotificacao);
+      }, tempoParaNotificacao);
+    });
+  });
+}
+
+// Enviar notificação de nota
+function enviarNotificacaoNota(textoNota, horaNota) {
+  if (Notification.permission !== 'granted') return;
+  
+  const preview = textoNota.length > 50 ? textoNota.substring(0, 50) + '...' : textoNota;
+  
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification(`📝 Lembrete de Nota - ${horaNota}`, {
+      body: preview,
+      icon: 'icon-192.png',
+      tag: `nota-${Date.now()}`
+    });
+  });
+}
 
 // ===== DADOS DAS PLANILHAS =====
 
@@ -1221,7 +1568,7 @@ const energiaSignoLunar = {
   },
   'Virgem': {
     'Lua Nova': 'Planejamento de rotinas saudáveis e organização meticulosa de tarefas.',
-    'Lua Crescente': 'Trabalho detalhista e ajustes práticas para garantir que os planos funcionem.',
+    'Lua Crescente': 'Trabalho detalhista e ajustes práticos para garantir que os planos funcionem.',
     'Lua Cheia': 'Resultados visíveis na saúde e no trabalho; clareza sobre o que precisa de melhoria técnica.',
     'Lua Minguante': 'Faxina física e mental; momento de eliminar métodos ou hábitos que não servem mais.'
   },
@@ -1573,7 +1920,7 @@ function criarPlanner() {
   }
 }
 
-// ===== FUNÇÃO ABRIR MODAL (ATUALIZADA COM BOTÕES DE APAGAR) =====
+// ===== FUNÇÃO ABRIR MODAL (ATUALIZADA COM NOTIFICAÇÕES) =====
 function abrirModal(dataISO, dia) {
   diaAtual = dataISO;
   modalTitulo.textContent = `Dia ${dia}`;
@@ -1640,6 +1987,21 @@ function abrirModal(dataISO, dia) {
   document.getElementById('notaHora').value = '';
   document.getElementById('notaTexto').value = '';
   
+  // Configurar controle de notificações
+  const notificarNotaSelect = document.getElementById('notificarNota');
+  const configNotificacaoDiv = document.getElementById('configNotificacao');
+  
+  notificarNotaSelect.value = 'nao';
+  configNotificacaoDiv.style.display = 'none';
+  
+  notificarNotaSelect.addEventListener('change', function() {
+    if (this.value === 'sim') {
+      configNotificacaoDiv.style.display = 'block';
+    } else {
+      configNotificacaoDiv.style.display = 'none';
+    }
+  });
+  
   modal.style.display = 'flex';
 }
 
@@ -1700,11 +2062,13 @@ function apagarSentimento() {
   }
 }
 
-// ===== FUNÇÃO SALVAR NOTA (MANTIDA) =====
+// ===== FUNÇÃO SALVAR NOTA (ATUALIZADA COM NOTIFICAÇÕES) =====
 function salvarNota() {
   const notaTexto = document.getElementById('notaTexto').value.trim();
   const sentimentosTexto = document.getElementById('sentimentos').value.trim();
   const notaHora = document.getElementById('notaHora').value;
+  const notificarNota = document.getElementById('notificarNota').value;
+  const tempoAntecedencia = parseInt(document.getElementById('tempoAntecedencia').value);
   
   // Salva nota se houver conteúdo
   if (notaTexto) {
@@ -1712,6 +2076,11 @@ function salvarNota() {
     if (!Array.isArray(notas[diaAtual])) notas[diaAtual] = [];
     notas[diaAtual].push({ hora: notaHora, texto: notaTexto });
     save('notas', notas);
+    
+    // Agendar notificação se solicitado
+    if (notificarNota === 'sim' && notaHora) {
+      agendarNotificacaoNota(diaAtual, notaHora, tempoAntecedencia, notaTexto);
+    }
   }
   
   // Salva sentimentos se houver conteúdo
@@ -1729,6 +2098,74 @@ function salvarNota() {
   
   fecharModal();
   criarPlanner();
+}
+
+// Agendar notificação para uma nota específica
+function agendarNotificacaoNota(dataISO, horaNota, antecedenciaMinutos, textoNota) {
+  const notasComNotificacao = load('notasComNotificacao') || {};
+  
+  if (!Array.isArray(notasComNotificacao[dataISO])) {
+    notasComNotificacao[dataISO] = [];
+  }
+  
+  notasComNotificacao[dataISO].push({
+    horaNota: horaNota,
+    antecedencia: antecedenciaMinutos,
+    texto: textoNota
+  });
+  
+  save('notasComNotificacao', notasComNotificacao);
+  
+  // Agendar a notificação
+  const [horaStr, minutoStr] = horaNota.split(':');
+  const hora = parseInt(horaStr);
+  const minuto = parseInt(minutoStr);
+  
+  const dataNota = new Date(dataISO);
+  dataNota.setHours(hora, minuto, 0, 0);
+  
+  // Subtrair antecedência (em minutos)
+  const dataNotificacao = new Date(dataNota.getTime() - (antecedenciaMinutos * 60 * 1000));
+  
+  const agora = new Date();
+  
+  // Se já passou, não agendar
+  if (dataNotificacao < agora) {
+    console.log('Data da notificação já passou, não agendando.');
+    return;
+  }
+  
+  const tempoParaNotificacao = dataNotificacao - agora;
+  
+  setTimeout(() => {
+    if (Notification.permission === 'granted') {
+      const preview = textoNota.length > 50 ? textoNota.substring(0, 50) + '...' : textoNota;
+      
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(`📝 Lembrete de Nota - ${horaNota}`, {
+          body: preview,
+          icon: 'icon-192.png',
+          tag: `nota-${Date.now()}`
+        });
+      });
+    }
+    
+    // Remover notificação após disparar
+    const notasComNotificacaoAtualizadas = load('notasComNotificacao') || {};
+    if (Array.isArray(notasComNotificacaoAtualizadas[dataISO])) {
+      const index = notasComNotificacaoAtualizadas[dataISO].findIndex(n => 
+        n.horaNota === horaNota && n.texto === textoNota
+      );
+      
+      if (index !== -1) {
+        notasComNotificacaoAtualizadas[dataISO].splice(index, 1);
+        if (notasComNotificacaoAtualizadas[dataISO].length === 0) {
+          delete notasComNotificacaoAtualizadas[dataISO];
+        }
+        save('notasComNotificacao', notasComNotificacaoAtualizadas);
+      }
+    }
+  }, tempoParaNotificacao);
 }
 
 function fecharModal() {
@@ -1841,48 +2278,6 @@ document.getElementById('mesProximo').onclick = () => {
 // ===== EVENTOS DO MODAL (MANTIDOS) =====
 document.getElementById('btnFechar').onclick = fecharModal;
 document.getElementById('btnSalvarNota').onclick = salvarNota;
-
-// ===== NOTIFICAÇÕES (MANTIDAS) =====
-function solicitarNotificacao() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'default') {
-    Notification.requestPermission();
-  }
-}
-
-function verificarSabaHoje() {
-  if (Notification.permission !== 'granted') return;
-
-  const hoje = new Date().toISOString().split('T')[0];
-  const saba = sabas2026[hoje];
-  if (!saba) return;
-
-  navigator.serviceWorker.ready.then(reg => {
-    reg.showNotification(`🔥 Hoje é ${saba.nome}`, {
-      body: saba.descricao,
-      icon: 'icon-192.png',
-      tag: 'saba-hoje'
-    });
-  });
-}
-
-function agendarVerificacaoDiaria() {
-  const agora = new Date();
-  const proxima = new Date();
-
-  proxima.setHours(8, 0, 0, 0);
-  if (agora > proxima) proxima.setDate(proxima.getDate() + 1);
-
-  const delay = proxima - agora;
-
-  setTimeout(() => {
-    verificarSabaHoje();
-    setInterval(verificarSabaHoje, 24 * 60 * 60 * 1000);
-  }, delay);
-}
-
-// ===== INICIALIZAÇÃO =====
-agendarVerificacaoDiaria();
 
 // Service Worker para PWA
 if ('serviceWorker' in navigator) {
