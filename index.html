@@ -1,799 +1,816 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Planner Ritualístico --- Grimório Completo</title>
-<link rel="manifest" href="manifest.json" />
-
-<!-- Fontes otimizadas para leitura -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-
-<style>
-/* VARIÁVEIS DE CORES - PALETA ACESSÍVEL 2026 */
-:root {
-  /* Cores neutras orgânicas - PAPEL COMO PADRÃO DEFINITIVO */
-  --color-cloud-dancer: #e8dfca; /* Papel reciclado como cor definitiva */
-  --color-bone-white: #f9f6ef; /* Tom de pergaminho suave */
-  --color-parchment: #f5f1e8; /* Pergaminho claro */
-
-  /* Cores de texto */
-  --color-obsidian: #1a1a1a; /* Quase preto, melhor que #000 */
-  --color-deep-teal: #0d2b2e; /* Verde muito escuro */
-  --color-text-primary: #121212; /* Cinza escuro para melhor legibilidade */
-  --color-text-secondary: #424242;
-
-  /* Cores de destaque - Tendências 2026 */
-  --color-digital-lavender: #b5a8ff; /* Cor do ano 2026 */
-  --color-transformative-teal: #2a7a7a; /* Verde-azulado transformativo */
-  --color-mystic-purple: #7e57c2; /* Roxo místico */
-  --color-sunset-amber: #ff8a50; /* Âmbar do pôr do sol */
-
-  /* Tipografia */
-  --font-heading: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mystic: 'Cormorant Garamond', serif;
-
-  /* Espaçamento */
-  --line-height-body: 1.6;
-  --line-height-heading: 1.3;
-  --letter-spacing-wide: 0.02em;
-  --letter-spacing-tight: -0.01em;
-
-  /* Bordas */
-  --border-radius-sm: 8px;
-  --border-radius-md: 12px;
-  --border-radius-lg: 20px;
-
-  /* Sombras suaves */
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-deep: 0 12px 36px rgba(0, 0, 0, 0.12);
-}
-
-/* ESTILOS GERAIS DO CORPO - FUNDO EM PAPEL DEFINITIVO */
-body {
-  font-family: var(--font-body);
-  background: var(--color-cloud-dancer); /* Cor de papel reciclado como padrão */
-  margin: 0;
-  padding: 0;
-  color: var(--color-text-primary);
-  min-height: 100vh;
-  line-height: var(--line-height-body);
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-body::before {
-  content: '☾ ✶ ⚝ ☿ ♀ ♂ ⚗ 🜃 🜁 🜂 🜄';
-  position: fixed;
-  inset: 0;
-  opacity: 0.03;
-  font-size: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  font-family: var(--font-mystic);
-  color: var(--color-text-secondary);
-}
-
-/* TELA DE INSTALAÇÃO */
-#installOverlay {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg, var(--color-transformative-teal), var(--color-deep-teal));
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 20px;
-}
-
-#installContainer {
-  background: var(--color-bone-white);
-  padding: 32px;
-  border-radius: var(--border-radius-lg);
-  width: 90%;
-  max-width: 420px;
-  border: 1px solid rgba(0,0,0,0.1);
-  text-align: center;
-  box-sizing: border-box;
-  box-shadow: var(--shadow-deep);
-}
-
-/* TELA DE FORMULÁRIO */
-#formOverlay {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg, #e7dff0, #cbb7d8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-#formContainer {
-  background: var(--color-bone-white);
-  padding: 28px;
-  border-radius: var(--border-radius-lg);
-  width: 90%;
-  max-width: 400px;
-  border: 1px solid rgba(0,0,0,0.1);
-  margin: 20px auto;
-  box-sizing: border-box;
-  box-shadow: var(--shadow-deep);
-}
-
-/* TIPOGRAFIA - TÍTULOS */
-h1, h2, h3, h4 {
-  font-family: var(--font-heading);
-  color: var(--color-deep-teal);
-  font-weight: 600;
-  line-height: var(--line-height-heading);
-  letter-spacing: var(--letter-spacing-tight);
-  margin-top: 0;
-}
-
-h1 {
-  font-size: 2.5rem;
-  text-align: center;
-  margin: 20px 0;
-  color: var(--color-transformative-teal);
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
-h4 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-}
-
-/* TIPOGRAFIA - CORPO */
-.texto, p, label, input, select, textarea, button {
-  font-family: var(--font-body);
-  font-size: 1rem; /* 16px base */
-  line-height: var(--line-height-body);
-  color: var(--color-text-primary);
-}
-
-label {
-  display: block;
-  margin-top: 16px;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-/* BOTÕES - ACESSÍVEIS */
-button {
-  margin-top: 12px;
-  background: var(--color-transformative-teal);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 1rem;
-  letter-spacing: var(--letter-spacing-wide);
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-button:hover, button:focus {
-  background: var(--color-digital-lavender);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
-  outline: 2px solid var(--color-digital-lavender);
-  outline-offset: 2px;
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-button.secondary {
-  background: transparent;
-  border: 2px solid var(--color-transformative-teal);
-  color: var(--color-transformative-teal);
-}
-
-button.secondary:hover {
-  background: var(--color-transformative-teal);
-  color: white;
-}
-
-/* INPUTS E FORMULÁRIOS */
-input, select, textarea {
-  width: 100%;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-  padding: 12px 16px;
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: var(--border-radius-sm);
-  background: white;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: 2px solid var(--color-digital-lavender);
-  border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(181, 168, 255, 0.1);
-}
-
-/* RESTANTE DO CSS ORIGINAL (ADAPTADO) */
-#capa, #planner, #prospera {
-  display: none;
-  padding: 24px;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  background: var(--color-bone-white);
-  border-radius: var(--border-radius-lg);
-  margin-top: 20px;
-  box-shadow: var(--shadow-soft);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-
-.dia {
-  background: white;
-  min-height: 120px;
-  border-radius: var(--border-radius-md);
-  padding: 12px;
-  cursor: pointer;
-  position: relative;
-  color: var(--color-mystic-purple);
-  font-size: 1rem;
-  border: 1px solid rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-}
-
-.dia:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-soft);
-  border-color: var(--color-digital-lavender);
-}
-
-.dias-semana div {
-  text-align: center;
-  font-weight: 600;
-  padding: 12px 0;
-  color: var(--color-transformative-teal);
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-}
-
-.preview {
-  font-size: 0.875rem;
-  margin-top: 8px;
-  font-style: italic;
-  word-break: break-word;
-  color: var(--color-text-secondary);
-  line-height: 1.4;
-}
-
-.estrela {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  font-size: 1rem;
-  color: var(--color-sunset-amber);
-}
-
-.iconesTopo {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  gap: 4px;
-  font-size: 0.875rem;
-}
-
-.top-nav {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.legenda {
-  font-size: 0.875rem;
-  margin: 16px 0;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-  color: var(--color-text-secondary);
-}
-
-/* MAIN RESPONSIVO */
-main {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  max-width: 1200px;
-  margin: 24px auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-section {
-  background: var(--color-bone-white);
-  padding: 24px;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-soft);
-  border: 1px solid rgba(0,0,0,0.05);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.texto {
-  color: var(--color-text-secondary);
-  font-size: 1.0625rem; /* 17px para melhor leitura */
-  line-height: var(--line-height-body);
-  text-align: justify;
-  margin-bottom: 1.5rem;
-}
-
-.livro label {
-  display: block;
-  margin-top: 20px;
-  font-size: 0.9375rem;
-}
-
-.livro input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 16px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(0,0,0,0.1);
-  background: white;
-  font-family: var(--font-body);
-}
-
-.caixa {
-  box-sizing: border-box;
-  background: white;
-  color: var(--color-text-primary);
-  padding: 20px;
-  border-radius: var(--border-radius-md);
-  margin-top: 24px;
-  overflow-x: auto;
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.lateral {
-  position: static;
-  top: auto;
-}
-
-.lunar {
-  background: var(--color-bone-white);
-  border: 2px dashed var(--color-transformative-teal);
-  padding: 24px;
-  border-radius: var(--border-radius-md);
-  font-size: 0.9375rem;
-}
-
-.lunar strong {
-  color: var(--color-transformative-teal);
-}
-
-.tabela {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  min-width: 300px;
-}
-
-.tabela th, .tabela td {
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  padding: 12px;
-  font-size: 0.9375rem;
-}
-
-.tabela th {
-  color: var(--color-transformative-teal);
-  font-weight: 600;
-  text-align: left;
-}
-
-.tabela input {
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-}
-
-.total-secao {
-  margin-top: 16px;
-  font-size: 0.9375rem;
-  color: var(--color-transformative-teal);
-  font-weight: 600;
-}
-
-.saldo {
-  margin-top: 24px;
-  padding: 20px;
-  background: linear-gradient(135deg, var(--color-digital-lavender), var(--color-mystic-purple));
-  border-radius: var(--border-radius-md);
-  color: white;
-  font-weight: 600;
-}
-
-.grafico {
-  margin-top: 24px;
-  background: var(--color-bone-white);
-  border: 1px solid var(--color-transformative-teal);
-  border-radius: var(--border-radius-md);
-  padding: 20px;
-  color: var(--color-transformative-teal);
-  font-size: 0.9375rem;
-}
-
-/* MODAL RESPONSIVO */
-#modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 2000;
-}
-
-#modal > div {
-  background: var(--color-bone-white);
-  padding: 24px;
-  border-radius: var(--border-radius-lg);
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box;
-  margin: 0 auto;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-deep);
-}
-
-.sentimentos-section {
-  margin: 20px 0;
-  padding: 20px;
-  background: white;
-  border-radius: var(--border-radius-md);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.sentimentos-section label {
-  display: block;
-  margin-bottom: 12px;
-  color: var(--color-transformative-teal);
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-#sentimentos {
-  width: 100%;
-  min-height: 100px;
-  padding: 16px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(0,0,0,0.1);
-  background: white;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  resize: vertical;
-  box-sizing: border-box;
-  line-height: var(--line-height-body);
-}
-
-.nota-item {
-  margin: 12px 0;
-  padding: 16px;
-  background: white;
-  border-radius: var(--border-radius-md);
-  border-left: 4px solid var(--color-transformative-teal);
-  position: relative;
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.nota-hora {
-  font-size: 0.8125rem;
-  color: var(--color-transformative-teal);
-  font-weight: 600;
-  margin-right: 40px;
-}
-
-.nota-texto {
-  font-size: 0.9375rem;
-  color: var(--color-text-primary);
-  margin-top: 8px;
-  margin-right: 40px;
-  line-height: var(--line-height-body);
-}
-
-.btn-apagar-nota {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font-size: 0.875rem;
-  padding: 6px 8px;
-  border-radius: var(--border-radius-sm);
-  transition: all 0.3s ease;
-}
-
-.btn-apagar-nota:hover {
-  background: rgba(255, 138, 80, 0.1);
-  transform: scale(1.1);
-  color: var(--color-sunset-amber);
-}
-
-.sentimento-item {
-  margin: 12px 0;
-  padding: 16px;
-  background: white;
-  border-radius: var(--border-radius-md);
-  border-left: 4px solid var(--color-mystic-purple);
-  position: relative;
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.btn-apagar-sentimento {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font-size: 0.875rem;
-  padding: 6px 8px;
-  border-radius: var(--border-radius-sm);
-  transition: all 0.3s ease;
-}
-
-.btn-apagar-sentimento:hover {
-  background: rgba(126, 87, 194, 0.1);
-  transform: scale(1.1);
-  color: var(--color-mystic-purple);
-}
-
-.oraculo-section {
-  margin-bottom: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: var(--border-radius-md);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.oraculo-title {
-  color: var(--color-transformative-teal);
-  font-weight: 600;
-  margin-bottom: 12px;
-  font-size: 1.25rem;
-  font-family: var(--font-heading);
-}
-
-.oraculo-text {
-  color: var(--color-text-primary);
-  font-size: 1rem;
-  line-height: var(--line-height-body);
-}
-
-/* Botão instalar */
-#btnInstalarAgora {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-  display: none;
-  background: var(--color-digital-lavender);
-}
-
-/* SEÇÃO DE NOTIFICAÇÕES NO MODAL */
-.notificacoes-section {
-  margin: 20px 0;
-  padding: 20px;
-  background: white;
-  border-radius: var(--border-radius-md);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.notificacoes-section label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--color-transformative-teal);
-  font-weight: 500;
-}
-
-.notificacoes-section input[type="time"],
-.notificacoes-section input[type="number"] {
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-.notificacoes-section select {
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-/* MODAL DE CONFIGURAÇÃO DE NOTIFICAÇÕES */
-#modalNotificacoes {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 20px;
-}
-
-#modalNotificacoes > div {
-  background: var(--color-bone-white);
-  padding: 24px;
-  border-radius: var(--border-radius-lg);
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-deep);
-}
-
-/* MEDIA QUERIES - RESPONSIVIDADE */
-@media (min-width: 768px) {
-  main {
-    grid-template-columns: 1.5fr 1fr;
-    margin: 32px auto;
-  }
-  .lateral {
-    position: sticky;
-    top: 32px;
-  }
-  .grid {
-    gap: 10px;
-  }
-  .dia {
-    min-height: 140px;
-    padding: 16px;
-    font-size: 1.1rem;
-  }
-  h1 {
-    font-size: 3rem;
-  }
-  h2 {
-    font-size: 2.25rem;
-  }
-  h3 {
-    font-size: 1.75rem;
-  }
-  /* Aumenta o tamanho da fonte para tablets */
-  body {
-    font-size: 1.0625rem;
-  }
-}
-
-@media (max-width: 480px) {
-  body::before {
-    font-size: 80px;
-  }
-  h1 {
-    font-size: 2rem;
-  }
-  h2, h3 {
-    font-size: 1.5rem;
-  }
-  .grid {
-    gap: 4px;
-  }
-  .dia {
-    min-height: 100px;
-    padding: 8px;
-    font-size: 0.9375rem;
-  }
-  #modal > div {
-    padding: 20px;
-  }
-  .oraculo-section {
-    padding: 16px;
-  }
-  .nota-item, .sentimento-item {
-    padding: 12px;
-  }
-  .btn-apagar-nota, .btn-apagar-sentimento {
-    top: 8px;
-    right: 8px;
-    font-size: 0.8125rem;
-  }
-  /* Aumenta o tamanho da fonte para mobile */
-  body {
-    font-size: 1rem; /* 16px mínimo para acessibilidade */
-  }
-  input, select, textarea, button {
-    font-size: 1rem; /* Garante tamanho mínimo */
-  }
-}
-
-/* AJUSTES DE CONTRASTE WCAG */
-.oraculo-text {
-  color: var(--color-text-primary);
-  background: white;
-}
-
-.nota-texto {
-  color: var(--color-text-primary);
-}
-
-/* Foco visível para acessibilidade */
-*:focus {
-  outline: 2px solid var(--color-digital-lavender);
-  outline-offset: 2px;
-}
-
-/* Melhorando o contraste dos botões */
-button {
-  color: white;
-  background-color: var(--color-transformative-teal);
-}
-
-button:hover {
-  background-color: var(--color-digital-lavender);
-}
-
-/* Contraste nos links */
-a {
-  color: var(--color-transformative-teal);
-  text-decoration: underline;
-}
-
-a:hover {
-  color: var(--color-digital-lavender);
-}
-
-/* Espaçamento entre parágrafos */
-p {
-  margin-bottom: 1.5rem;
-}
-
-/* Hierarquia clara de cabeçalhos */
-h1 { margin-bottom: 2rem; }
-h2 { margin-bottom: 1.5rem; }
-h3 { margin-bottom: 1rem; }
-h4 { margin-bottom: 0.75rem; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planner Ritualístico — Grimório Completo</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Fontes otimizadas para leitura -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* VARIÁVEIS DE CORES - PALETA ACESSÍVEL 2026 */
+    :root {
+      /* Cores neutras orgânicas - PAPEL COMO PADRÃO DEFINITIVO */
+      --color-cloud-dancer: #e8dfca; /* Papel reciclado como cor definitiva */
+      --color-bone-white: #f9f6ef;   /* Tom de pergaminho suave */
+      --color-parchment: #f5f1e8;    /* Pergaminho claro */
+      
+      /* Cores de texto */
+      --color-obsidian: #1a1a1a;     /* Quase preto, melhor que #000 */
+      --color-deep-teal: #0d2b2e;    /* Verde muito escuro */
+      --color-text-primary: #121212; /* Cinza escuro para melhor legibilidade */
+      --color-text-secondary: #424242;
+      
+      /* Cores de destaque - Tendências 2026 */
+      --color-digital-lavender: #b5a8ff; /* Cor do ano 2026 */
+      --color-transformative-teal: #2a7a7a; /* Verde-azulado transformativo */
+      --color-mystic-purple: #7e57c2;     /* Roxo místico */
+      --color-sunset-amber: #ff8a50;      /* Âmbar do pôr do sol */
+      
+      /* Tipografia */
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mystic: 'Cormorant Garamond', serif;
+      
+      /* Espaçamento */
+      --line-height-body: 1.6;
+      --line-height-heading: 1.3;
+      --letter-spacing-wide: 0.02em;
+      --letter-spacing-tight: -0.01em;
+      
+      /* Bordas */
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 20px;
+      
+      /* Sombras suaves */
+      --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-deep: 0 12px 36px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* ESTILOS GERAIS DO CORPO - FUNDO EM PAPEL DEFINITIVO */
+    body {
+      font-family: var(--font-body);
+      background: var(--color-cloud-dancer); /* Cor de papel reciclado como padrão */
+      margin: 0;
+      padding: 0;
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      line-height: var(--line-height-body);
+      letter-spacing: var(--letter-spacing-wide);
+    }
+
+    body::before {
+      content: '☾ ✶ ⚝ ☿ ♀ ♂ ⚗ 🜃 🜁 🜂 🜄';
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      font-size: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      font-family: var(--font-mystic);
+      color: var(--color-text-secondary);
+    }
+
+    /* TELA DE INSTALAÇÃO */
+    #installOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-transformative-teal), var(--color-deep-teal));
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    #installContainer {
+      background: var(--color-bone-white);
+      padding: 32px;
+      border-radius: var(--border-radius-lg);
+      width: 90%;
+      max-width: 420px;
+      border: 1px solid rgba(0,0,0,0.1);
+      text-align: center;
+      box-sizing: border-box;
+      box-shadow: var(--shadow-deep);
+    }
+
+    /* TELA DE FORMULÁRIO */
+    #formOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #e7dff0, #cbb7d8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    #formContainer {
+      background: var(--color-bone-white);
+      padding: 28px;
+      border-radius: var(--border-radius-lg);
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid rgba(0,0,0,0.1);
+      margin: 20px auto;
+      box-sizing: border-box;
+      box-shadow: var(--shadow-deep);
+    }
+
+    /* TIPOGRAFIA - TÍTULOS */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      color: var(--color-deep-teal);
+      font-weight: 600;
+      line-height: var(--line-height-heading);
+      letter-spacing: var(--letter-spacing-tight);
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin: 20px 0;
+      color: var(--color-transformative-teal);
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h4 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* TIPOGRAFIA - CORPO */
+    .texto, p, label, input, select, textarea, button {
+      font-family: var(--font-body);
+      font-size: 1rem; /* 16px base */
+      line-height: var(--line-height-body);
+      color: var(--color-text-primary);
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    /* BOTÕES - ACESSÍVEIS */
+    button {
+      margin-top: 12px;
+      background: var(--color-transformative-teal);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--border-radius-md);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: var(--letter-spacing-wide);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover, button:focus {
+      background: var(--color-digital-lavender);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+      outline: 2px solid var(--color-digital-lavender);
+      outline-offset: 2px;
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: transparent;
+      border: 2px solid var(--color-transformative-teal);
+      color: var(--color-transformative-teal);
+    }
+
+    button.secondary:hover {
+      background: var(--color-transformative-teal);
+      color: white;
+    }
+
+    /* INPUTS E FORMULÁRIOS */
+    input, select, textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: var(--border-radius-sm);
+      background: white;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--color-digital-lavender);
+      border-color: transparent;
+      box-shadow: 0 0 0 3px rgba(181, 168, 255, 0.1);
+    }
+
+    /* RESTANTE DO CSS ORIGINAL (ADAPTADO) */
+    #capa, #planner, #prospera {
+      display: none;
+      padding: 24px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--color-bone-white);
+      border-radius: var(--border-radius-lg);
+      margin-top: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .dia {
+      background: white;
+      min-height: 120px;
+      border-radius: var(--border-radius-md);
+      padding: 12px;
+      cursor: pointer;
+      position: relative;
+      color: var(--color-mystic-purple);
+      font-size: 1rem;
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .dia:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-soft);
+      border-color: var(--color-digital-lavender);
+    }
+
+    .dias-semana div {
+      text-align: center;
+      font-weight: 600;
+      padding: 12px 0;
+      color: var(--color-transformative-teal);
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+    }
+
+    .preview {
+      font-size: 0.875rem;
+      margin-top: 8px;
+      font-style: italic;
+      word-break: break-word;
+      color: var(--color-text-secondary);
+      line-height: 1.4;
+    }
+
+    .estrela {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 1rem;
+      color: var(--color-sunset-amber);
+    }
+
+    .iconesTopo {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 4px;
+      font-size: 0.875rem;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .legenda {
+      font-size: 0.875rem;
+      margin: 16px 0;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      color: var(--color-text-secondary);
+    }
+
+    /* MAIN RESPONSIVO */
+    main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    section {
+      background: var(--color-bone-white);
+      padding: 24px;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0,0,0,0.05);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .texto {
+      color: var(--color-text-secondary);
+      font-size: 1.0625rem; /* 17px para melhor leitura */
+      line-height: var(--line-height-body);
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    .livro label {
+      display: block;
+      margin-top: 20px;
+      font-size: 0.9375rem;
+    }
+
+    .livro input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid rgba(0,0,0,0.1);
+      background: white;
+      font-family: var(--font-body);
+    }
+
+    .caixa {
+      box-sizing: border-box;
+      background: white;
+      color: var(--color-text-primary);
+      padding: 20px;
+      border-radius: var(--border-radius-md);
+      margin-top: 24px;
+      overflow-x: auto;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .lateral {
+      position: static;
+      top: auto;
+    }
+
+    .lunar {
+      background: var(--color-bone-white);
+      border: 2px dashed var(--color-transformative-teal);
+      padding: 24px;
+      border-radius: var(--border-radius-md);
+      font-size: 0.9375rem;
+    }
+
+    .lunar strong {
+      color: var(--color-transformative-teal);
+    }
+
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      min-width: 300px;
+    }
+
+    .tabela th, .tabela td {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 12px;
+      font-size: 0.9375rem;
+    }
+
+    .tabela th {
+      color: var(--color-transformative-teal);
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .tabela input {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+    }
+
+    .total-secao {
+      margin-top: 16px;
+      font-size: 0.9375rem;
+      color: var(--color-transformative-teal);
+      font-weight: 600;
+    }
+
+    .saldo {
+      margin-top: 24px;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--color-digital-lavender), var(--color-mystic-purple));
+      border-radius: var(--border-radius-md);
+      color: white;
+      font-weight: 600;
+    }
+
+    .grafico {
+      margin-top: 24px;
+      background: var(--color-bone-white);
+      border: 1px solid var(--color-transformative-teal);
+      border-radius: var(--border-radius-md);
+      padding: 20px;
+      color: var(--color-transformative-teal);
+      font-size: 0.9375rem;
+    }
+
+    /* MODAL RESPONSIVO */
+    #modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2000;
+    }
+
+    #modal > div {
+      background: var(--color-bone-white);
+      padding: 24px;
+      border-radius: var(--border-radius-lg);
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      margin: 0 auto;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-deep);
+    }
+
+    .sentimentos-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .sentimentos-section label {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--color-transformative-teal);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    #sentimentos {
+      width: 100%;
+      min-height: 100px;
+      padding: 16px;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid rgba(0,0,0,0.1);
+      background: white;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      resize: vertical;
+      box-sizing: border-box;
+      line-height: var(--line-height-body);
+    }
+
+    .nota-item {
+      margin: 12px 0;
+      padding: 16px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border-left: 4px solid var(--color-transformative-teal);
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .nota-hora {
+      font-size: 0.8125rem;
+      color: var(--color-transformative-teal);
+      font-weight: 600;
+      margin-right: 40px;
+    }
+
+    .nota-texto {
+      font-size: 0.9375rem;
+      color: var(--color-text-primary);
+      margin-top: 8px;
+      margin-right: 40px;
+      line-height: var(--line-height-body);
+    }
+
+    .btn-apagar-nota {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 0.875rem;
+      padding: 6px 8px;
+      border-radius: var(--border-radius-sm);
+      transition: all 0.3s ease;
+    }
+
+    .btn-apagar-nota:hover {
+      background: rgba(255, 138, 80, 0.1);
+      transform: scale(1.1);
+      color: var(--color-sunset-amber);
+    }
+
+    .sentimento-item {
+      margin: 12px 0;
+      padding: 16px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border-left: 4px solid var(--color-mystic-purple);
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .btn-apagar-sentimento {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 0.875rem;
+      padding: 6px 8px;
+      border-radius: var(--border-radius-sm);
+      transition: all 0.3s ease;
+    }
+
+    .btn-apagar-sentimento:hover {
+      background: rgba(126, 87, 194, 0.1);
+      transform: scale(1.1);
+      color: var(--color-mystic-purple);
+    }
+
+    .oraculo-section {
+      margin-bottom: 24px;
+      padding: 20px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .oraculo-title {
+      color: var(--color-transformative-teal);
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.25rem;
+      font-family: var(--font-heading);
+    }
+
+    .oraculo-text {
+      color: var(--color-text-primary);
+      font-size: 1rem;
+      line-height: var(--line-height-body);
+    }
+
+    /* Botão instalar */
+    #btnInstalarAgora {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: none;
+      background: var(--color-digital-lavender);
+    }
+
+    /* SEÇÃO DE NOTIFICAÇÕES NO MODAL */
+    .notificacoes-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .notificacoes-section label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--color-transformative-teal);
+      font-weight: 500;
+    }
+
+    .notificacoes-section input[type="time"],
+    .notificacoes-section input[type="number"] {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .notificacoes-section select {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    /* MODAL DE CONFIGURAÇÃO DE NOTIFICAÇÕES */
+    #modalNotificacoes {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    #modalNotificacoes > div {
+      background: var(--color-bone-white);
+      padding: 24px;
+      border-radius: var(--border-radius-lg);
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-deep);
+    }
+
+    /* MEDIA QUERIES - RESPONSIVIDADE */
+    @media (min-width: 768px) {
+      main {
+        grid-template-columns: 1.5fr 1fr;
+        margin: 32px auto;
+      }
+      
+      .lateral {
+        position: sticky;
+        top: 32px;
+      }
+      
+      .grid {
+        gap: 10px;
+      }
+      
+      .dia {
+        min-height: 140px;
+        padding: 16px;
+        font-size: 1.1rem;
+      }
+      
+      h1 {
+        font-size: 3rem;
+      }
+      
+      h2 {
+        font-size: 2.25rem;
+      }
+      
+      h3 {
+        font-size: 1.75rem;
+      }
+      
+      /* Aumenta o tamanho da fonte para tablets */
+      body {
+        font-size: 1.0625rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body::before {
+        font-size: 80px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2, h3 {
+        font-size: 1.5rem;
+      }
+      
+      .grid {
+        gap: 4px;
+      }
+      
+      .dia {
+        min-height: 100px;
+        padding: 8px;
+        font-size: 0.9375rem;
+      }
+      
+      #modal > div {
+        padding: 20px;
+      }
+      
+      .oraculo-section {
+        padding: 16px;
+      }
+      
+      .nota-item, .sentimento-item {
+        padding: 12px;
+      }
+      
+      .btn-apagar-nota, .btn-apagar-sentimento {
+        top: 8px;
+        right: 8px;
+        font-size: 0.8125rem;
+      }
+      
+      /* Aumenta o tamanho da fonte para mobile */
+      body {
+        font-size: 1rem; /* 16px mínimo para acessibilidade */
+      }
+      
+      input, select, textarea, button {
+        font-size: 1rem; /* Garante tamanho mínimo */
+      }
+    }
+
+    /* AJUSTES DE CONTRASTE WCAG */
+    .oraculo-text {
+      color: var(--color-text-primary);
+      background: white;
+    }
+    
+    .nota-texto {
+      color: var(--color-text-primary);
+    }
+    
+    /* Foco visível para acessibilidade */
+    *:focus {
+      outline: 2px solid var(--color-digital-lavender);
+      outline-offset: 2px;
+    }
+    
+    /* Melhorando o contraste dos botões */
+    button {
+      color: white;
+      background-color: var(--color-transformative-teal);
+    }
+    
+    button:hover {
+      background-color: var(--color-digital-lavender);
+    }
+    
+    /* Contraste nos links */
+    a {
+      color: var(--color-transformative-teal);
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      color: var(--color-digital-lavender);
+    }
+    
+    /* Espaçamento entre parágrafos */
+    p {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Hierarquia clara de cabeçalhos */
+    h1 { margin-bottom: 2rem; }
+    h2 { margin-bottom: 1.5rem; }
+    h3 { margin-bottom: 1rem; }
+    h4 { margin-bottom: 0.75rem; }
+  </style>
 </head>
-
 <body>
+
 <!-- TELA DE INSTALAÇÃO -->
 <div id="installOverlay">
   <div id="installContainer">
@@ -903,6 +920,7 @@ h4 { margin-bottom: 0.75rem; }
           <option value="nao">Não receber notificação</option>
           <option value="sim">Sim, receber notificação</option>
         </select>
+        
         <div id="configNotificacao" style="display:none;">
           <label for="tempoAntecedencia">Tempo de antecedência:</label>
           <select id="tempoAntecedencia">
@@ -934,19 +952,23 @@ h4 { margin-bottom: 0.75rem; }
 <div id="modalNotificacoes" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:2000; padding:20px;">
   <div style="background:var(--color-bone-white); padding:24px; border-radius:var(--border-radius-lg); width:100%; max-width:500px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
     <h3 style="color:var(--color-transformative-teal);margin-bottom:20px;">🔔 Configurar Notificações</h3>
+    
     <div class="notificacoes-section">
       <label for="notificacoesAtivas">📢 Ativar notificações?</label>
       <select id="notificacoesAtivas">
         <option value="sim">Sim, receber notificações</option>
         <option value="nao">Não receber notificações</option>
       </select>
+      
       <label for="horaNotificacaoDiaria">⏰ Hora para notificação diária:</label>
       <input type="time" id="horaNotificacaoDiaria" value="08:00">
+      
       <label for="notificarSabas">🔥 Notificar sobre Sabás?</label>
       <select id="notificarSabas">
         <option value="sim">Sim, notificar sobre Sabás</option>
         <option value="nao">Não notificar sobre Sabás</option>
       </select>
+      
       <label for="antecedenciaSabas">📅 Antecedência para Sabás:</label>
       <select id="antecedenciaSabas">
         <option value="1">1 dia antes</option>
@@ -954,13 +976,16 @@ h4 { margin-bottom: 0.75rem; }
         <option value="3">3 dias antes</option>
         <option value="7">1 semana antes</option>
       </select>
+      
       <label for="horaNotificacaoSabas">⏰ Hora para notificação de Sabás:</label>
       <input type="time" id="horaNotificacaoSabas" value="09:00">
     </div>
+    
     <div style="display:flex;gap:12px;margin-top:20px;">
       <button id="btnSalvarConfigNotificacoes">💾 Salvar Configurações</button>
       <button id="btnFecharNotificacoes" class="secondary">✖ Fechar</button>
     </div>
+    
     <p style="font-size:0.875rem;margin-top:15px;opacity:0.8;">
       As notificações funcionam melhor com o aplicativo instalado.
     </p>
@@ -970,86 +995,87 @@ h4 { margin-bottom: 0.75rem; }
 <!-- BRUXA PRÓSPERA -->
 <div id="prospera">
   <div class="top-nav"><button id="voltarCapa2" class="secondary">⟵ Capa</button></div>
-  <h1>📖 Livro da Bruxa Próspera</h1>
-  <main>
-    <section class="livro">
-      <h2>✦ Fonte de Abundância</h2>
-      <div class="texto">Registre todos os ganhos que chegam até você através do seu trabalho, trocas, serviços ou vendas.</div>
-      <div class="caixa">
-        <table class="tabela">
-          <thead><tr><th>Origem do ganho</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="abundancia"></tbody>
-        </table>
-        <button onclick="addLinha('abundancia','ganho')">+ adicionar ganho</button>
-        <div class="total-secao">Total Abundância: R$ <span id="total-abundancia">0</span></div>
-      </div>
-      
-      <h2 style="margin-top:34px">✦ Fluidez</h2>
-      <div class="texto">Aqui você observa para onde sua energia financeira escoa --- como você gasta, sustenta e nutre sua vida.</div>
-      
-      <h3>A) Sustento</h3><div class="texto">Despesas essenciais para sua sobrevivência material: moradia, contas, transporte, alimentação.</div>
-      <div class="caixa">
-        <table class="tabela">
-          <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="sustento"></tbody>
-        </table>
-        <button onclick="addLinha('sustento')">+ adicionar gasto</button>
-      </div>
-      <br> </br>
-      
-      <h3>B) Florescimento</h3><div class="texto">Gastos que ampliam prazer, aprendizado, descanso, cultura e bem-estar.</div>
-      <div class="caixa">
-        <table class="tabela">
-          <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="florescimento"></tbody>
-        </table>
-        <button onclick="addLinha('florescimento')">+ adicionar gasto</button>
-      </div>
-      <br> </br>
-      
-      <h3>C) Centelha Energética</h3><div class="texto">Gastos inesperados ou emergenciais que exigem energia imediata.</div>
-      <div class="caixa">
-        <table class="tabela">
-          <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="centelha"></tbody>
-        </table>
-        <button onclick="addLinha('centelha')">+ adicionar gasto</button>
-      </div>
-      
-      <h2 style="margin-top:34px">✦ Expansão</h2>
-      <div class="texto">Reservas voltadas a investimentos futuros, sonhos, avanços e projetos de longo prazo.</div>
-      <div class="caixa">
-        <label>Sementes de Prosperidade</label>
-        <input placeholder="Valor reservado">
-        <label>Sonho ou intenção</label>
-        <input placeholder="Liberdade, descanso, projeto...">
-      </div>
-      
-      <div id="totais">
+ <h1>📖 Livro da Bruxa Próspera</h1>
+
+<main>
+
+  <section class="livro">
+
+    <h2>✦ Fonte de Abundância</h2>
+    <div class="texto">Registre todos os ganhos que chegam até você através do seu trabalho, trocas, serviços ou vendas.</div>
+    <div class="caixa">
+      <table class="tabela">
+        <thead><tr><th>Origem do ganho</th><th>Valor</th><th></th></tr></thead>
+        <tbody id="abundancia"></tbody>
+      </table>
+      <button onclick="addLinha('abundancia','ganho')">+ adicionar ganho</button>
+      <div class="total-secao">Total Abundância: R$ <span id="total-abundancia">0</span></div>
+    </div>
+
+    <h2 style="margin-top:34px">✦ Fluidez</h2>
+    <div class="texto">Aqui você observa para onde sua energia financeira escoa — como você gasta, sustenta e nutre sua vida.</div>
+
+    <h3>A) Sustento</h3><div class="texto">Despesas essenciais para sua sobrevivência material: moradia, contas, transporte, alimentação.</div>
+    <div class="caixa">
+      <table class="tabela">
+        <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+        <tbody id="sustento"></tbody>
+      </table>
+      <button onclick="addLinha('sustento')">+ adicionar gasto</button>
+    </div>
+<br> </br>
+    <h3>B) Florescimento</h3><div class="texto">Gastos que ampliam prazer, aprendizado, descanso, cultura e bem-estar.</div>
+    <div class="caixa">
+      <table class="tabela">
+        <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+        <tbody id="florescimento"></tbody>
+      </table>
+      <button onclick="addLinha('florescimento')">+ adicionar gasto</button>
+    </div>
+<br> </br>
+    <h3>C) Centelha Energética</h3><div class="texto">Gastos inesperados ou emergenciais que exigem energia imediata.</div>
+    <div class="caixa">
+      <table class="tabela">
+        <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+        <tbody id="centelha"></tbody>
+      </table>
+      <button onclick="addLinha('centelha')">+ adicionar gasto</button>
+    </div>
+
+    <h2 style="margin-top:34px">✦ Expansão</h2>
+    <div class="texto">Reservas voltadas a investimentos futuros, sonhos, avanços e projetos de longo prazo.</div>
+    <div class="caixa">
+      <label>Sementes de Prosperidade</label>
+      <input placeholder="Valor reservado">
+      <label>Sonho ou intenção</label>
+      <input placeholder="Liberdade, descanso, projeto...">
+    </div>
+
+        <div id="totais">
         <div class="total-secao">Total Sustento: R$ <span id="total-sustento">0</span></div>
         <div class="total-secao">Total Florescimento: R$ <span id="total-florescimento">0</span></div>
         <div class="total-secao">Total Centelha: R$ <span id="total-centelha">0</span></div>
         <div class="saldo">Saldo Energético do Mês: R$ <span id="saldo">0</span></div>
       </div>
+
+  </section>
+
+  <aside class="lateral">
+    <section class="lunar">
+      <h3>🌙 A Lua Observa Teu Ouro</h3>
+      <p><strong>Lua Nova:</strong> planeje, defina metas, evite impulsos.</p>
+      <p><strong>Lua Crescente:</strong> organize, negocie, expanda.</p>
+      <p><strong>Lua Cheia:</strong> agradeça, observe excessos.</p>
+      <p><strong>Lua Minguante:</strong> corte gastos e libere padrões.</p>
+      <div class="grafico" id="grafico">📊 Gráfico Ritual: Fluidez x Lua<br>(ativação simbólica)</div>
     </section>
-    
-    <aside class="lateral">
-      <section class="lunar">
-        <h3>🌙 A Lua Observa Teu Ouro</h3>
-        <p><strong>Lua Nova:</strong> planeje, defina metas, evite impulsos.</p>
-        <p><strong>Lua Crescente:</strong> organize, negocie, expanda.</p>
-        <p><strong>Lua Cheia:</strong> agradeça, observe excessos.</p>
-        <p><strong>Lua Minguante:</strong> corte gastos e libere padrões.</p>
-        <div class="grafico" id="grafico">📊 Gráfico Ritual: Fluidez x Lua<br>(ativação simbólica)</div>
-      </section>
-    </aside>
-  </main>
-</div>
+  </aside>
+
+</main>
 
 <script>
 // ===== VARIÁVEIS GLOBAIS =====
 let deferredPrompt = null;
-let notificacoesAgendadas = [];
 
 // ===== ELEMENTOS =====
 const installOverlay = document.getElementById('installOverlay');
@@ -1073,18 +1099,10 @@ const modal = document.getElementById('modal');
 const oraculo = document.getElementById('oraculo');
 const notasSalvas = document.getElementById('notasSalvas');
 const sentimentosSalvos = document.getElementById('sentimentosSalvos');
+
 let mesAtual = new Date().getMonth();
 let anoAtual = 2026;
 let diaAtual = null;
-
-// ===== FUNÇÕES AUXILIARES DE DATA =====
-function getDataLocalISO() {
-  const agora = new Date();
-  const ano = agora.getFullYear();
-  const mes = String(agora.getMonth() + 1).padStart(2, '0');
-  const dia = String(agora.getDate()).padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
 
 // ===== FUNÇÕES DE ARMAZENAMENTO =====
 function save(k, v) {
@@ -1100,9 +1118,11 @@ function load(k) {
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
+  
   if (btnInstalarAgora) {
     btnInstalarAgora.style.display = 'block';
   }
+  
   const hasVisited = localStorage.getItem('hasVisited');
   if (!hasVisited) {
     installOverlay.style.display = 'flex';
@@ -1112,11 +1132,14 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 btnInstalarPWA.addEventListener('click', async () => {
   if (!deferredPrompt) return;
+  
   deferredPrompt.prompt();
   const choiceResult = await deferredPrompt.userChoice;
+  
   if (choiceResult.outcome === 'accepted') {
     console.log('Usuário aceitou instalar o PWA');
   }
+  
   deferredPrompt = null;
   installOverlay.style.display = 'none';
   formOverlay.style.display = 'flex';
@@ -1131,8 +1154,10 @@ btnPularInstalacao.addEventListener('click', () => {
 
 btnInstalarAgora.addEventListener('click', async () => {
   if (!deferredPrompt) return;
+  
   deferredPrompt.prompt();
   const choiceResult = await deferredPrompt.userChoice;
+  
   if (choiceResult.outcome === 'accepted') {
     btnInstalarAgora.style.display = 'none';
   }
@@ -1147,11 +1172,13 @@ btnConfigNotificacoes.addEventListener('click', () => {
     antecedenciaSabas: '1',
     horaSabas: '09:00'
   };
+  
   document.getElementById('notificacoesAtivas').value = config.ativas;
   document.getElementById('horaNotificacaoDiaria').value = config.horaDiaria;
   document.getElementById('notificarSabas').value = config.notificarSabas;
   document.getElementById('antecedenciaSabas').value = config.antecedenciaSabas;
   document.getElementById('horaNotificacaoSabas').value = config.horaSabas;
+  
   modalNotificacoes.style.display = 'flex';
 });
 
@@ -1167,6 +1194,7 @@ btnSalvarConfigNotificacoes.addEventListener('click', () => {
     antecedenciaSabas: document.getElementById('antecedenciaSabas').value,
     horaSabas: document.getElementById('horaNotificacaoSabas').value
   };
+  
   save('configNotificacoes', config);
   agendarNotificacoes();
   modalNotificacoes.style.display = 'none';
@@ -1180,16 +1208,17 @@ document.getElementById('salvar').onclick = () => {
   const ano = document.getElementById('anoPessoal').value;
   const dataNascimento = document.getElementById('dataNascimento').value;
   const ciclo = document.getElementById('ciclo').value;
-  
+
   if (!nome) {
     alert('Por favor, digite seu nome mágico!');
     return;
   }
+
   if (!signo) {
     alert('Por favor, selecione seu signo!');
     return;
   }
-  
+
   const perfil = {
     nome: nome,
     signo: signo,
@@ -1197,7 +1226,7 @@ document.getElementById('salvar').onclick = () => {
     dataNascimento: dataNascimento || '',
     ciclo: ciclo || ''
   };
-  
+
   save('perfil', perfil);
   solicitarPermissaoNotificacao();
   nomeCapa.textContent = `Salve, ${perfil.nome}`;
@@ -1231,6 +1260,7 @@ btnAlterarNome.addEventListener('click', () => {
 // ===== VERIFICAÇÃO INICIAL =====
 window.addEventListener('load', () => {
   const perfilSalvo = load('perfil');
+  
   if (perfilSalvo && perfilSalvo.nome) {
     formOverlay.style.display = 'none';
     capa.style.display = 'block';
@@ -1248,13 +1278,6 @@ window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
       .then(registration => {
         console.log('Service Worker registrado:', registration.scope);
-        // Configurar listener para cliques em notificações
-        navigator.serviceWorker.addEventListener('message', event => {
-          if (event.data && event.data.action === 'notificationClick') {
-            const data = event.data.data;
-            handleNotificationClick(data);
-          }
-        });
       })
       .catch(err => {
         console.error('Erro no Service Worker:', err);
@@ -1287,9 +1310,6 @@ function solicitarPermissaoNotificacao() {
 function agendarNotificacoes() {
   console.log('Agendando notificações...');
   
-  // Cancelar notificações anteriores
-  cancelarTodasNotificacoes();
-  
   const config = load('configNotificacoes');
   if (!config || config.ativas === 'nao') {
     console.log('Notificações desativadas.');
@@ -1301,19 +1321,18 @@ function agendarNotificacoes() {
     return;
   }
   
-  // Agendar notificações de ALERTAS (eventos fixos) APENAS PARA HOJE
-  agendarAlertasParaHoje(config);
+  // Cancelar todas as notificações anteriores
+  cancelarTodasNotificacoes();
+  
+  // Agendar notificações de ALERTAS (eventos fixos)
+  agendarAlertasFixos(config);
   
   // Agendar notificações de LEMBRETES (notas da usuária)
   agendarLembretesNotas();
 }
 
 function cancelarTodasNotificacoes() {
-  // Limpar timeouts anteriores
-  notificacoesAgendadas.forEach(timeoutId => clearTimeout(timeoutId));
-  notificacoesAgendadas = [];
-  
-  // Limpar notificações do Service Worker
+  // Esta função limpa notificações antigas ao recarregar as configurações
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(registration => {
       registration.getNotifications().then(notifications => {
@@ -1325,85 +1344,78 @@ function cancelarTodasNotificacoes() {
   }
 }
 
-function agendarAlertasParaHoje(config) {
-  console.log('Agendando ALERTAS para HOJE...');
-  const hoje = getDataLocalISO();
+function agendarAlertasFixos(config) {
+  console.log('Agendando ALERTAS fixos...');
   
-  // Verificar fases lunares HOJE
-  if (lunacoes2026[hoje]) {
-    const lua = lunacoes2026[hoje];
-    const horario = luaForaDeCurso[hoje] ? ` (Horário: ${luaForaDeCurso[hoje].split('--')[0]})` : '';
+  // Agendar notificações para fases lunares
+  Object.keys(lunacoes2026).forEach(dataISO => {
+    const lua = lunacoes2026[dataISO];
+    const horario = luaForaDeCurso[dataISO] ? ` (Horário: ${luaForaDeCurso[dataISO].split('–')[0]})` : '';
     const mensagem = `Mudança de fase lunar hoje: ${lua.fase} em ${lua.signo}${horario}!`;
-    const horaAlerta = config.horaDiaria || '08:00';
-    agendarAlertaParaHoje(hoje, horaAlerta, '🌙 Alerta Lunar', mensagem, 'planner', hoje);
+    
+    agendarAlertaParaData(dataISO, '08:00', '🌙 Alerta Lunar', mensagem);
+  });
+  
+  // Agendar notificações para Sabás com antecedência configurável
+  if (config.notificarSabas === 'sim') {
+    const antecedenciaDias = parseInt(config.antecedenciaSabas);
+    const horaSabas = config.horaSabas || '09:00';
+    
+    Object.keys(sabas2026).forEach(dataSabá => {
+      const sabá = sabas2026[dataSabá];
+      
+      // Agendar notificação no próprio dia do Sabá
+      const mensagemDia = `Hoje é ${sabá.nome}: ${sabá.significado}`;
+      agendarAlertaParaData(dataSabá, horaSabas, `🔥 ${sabá.nome}`, mensagemDia);
+      
+      // Agendar notificação com antecedência
+      if (antecedenciaDias > 0) {
+        const dataAntecedencia = new Date(dataSabá);
+        dataAntecedencia.setDate(dataAntecedencia.getDate() - antecedenciaDias);
+        const dataAntecedenciaISO = dataAntecedencia.toISOString().split('T')[0];
+        
+        const mensagemAntecedencia = `Em ${antecedenciaDias} dia(s) será ${sabá.nome}. Prepare-se!`;
+        agendarAlertaParaData(dataAntecedenciaISO, horaSabas, `🔥 ${sabá.nome} em breve`, mensagemAntecedencia);
+      }
+    });
   }
   
-  // Verificar Sabás HOJE
-  if (config.notificarSabas === 'sim' && sabas2026[hoje]) {
-    const sabá = sabas2026[hoje];
-    const mensagem = `Hoje é ${sabá.nome}: ${sabá.significado}`;
-    const horaAlerta = config.horaSabas || '09:00';
-    agendarAlertaParaHoje(hoje, horaAlerta, `🔥 ${sabá.nome}`, mensagem, 'planner', hoje);
-  }
-  
-  // Verificar Lua fora de curso HOJE
-  if (luaForaDeCurso[hoje]) {
-    const horario = luaForaDeCurso[hoje];
+  // Agendar notificações para Lua fora de curso
+  Object.keys(luaForaDeCurso).forEach(dataISO => {
+    const horario = luaForaDeCurso[dataISO];
     const mensagem = `Lua fora de curso hoje das ${horario}. Evite decisões importantes neste período.`;
-    const horaAlerta = horario.split('--')[0];
-    agendarAlertaParaHoje(hoje, horaAlerta, '⏳ Alerta Lunar', mensagem, 'planner', hoje);
-  }
+    agendarAlertaParaData(dataISO, horario.split('–')[0], '⏳ Alerta Lunar', mensagem);
+  });
   
-  // Agendar notificação diária para amanhã
+  // Agendar notificações diárias
   agendarNotificacaoDiaria(config);
 }
 
-function agendarAlertaParaHoje(dataISO, hora, titulo, mensagem, destino, dataDestino) {
-  const hoje = getDataLocalISO();
+function agendarAlertaParaData(dataISO, hora, titulo, mensagem) {
+  const hoje = new Date().toISOString().split('T')[0];
+  const dataAlerta = new Date(dataISO + 'T' + hora);
   
-  // Só agenda se for hoje
-  if (dataISO !== hoje) {
-    console.log(`Alerta ignorado: ${dataISO} não é hoje (${hoje})`);
+  // Verificar se a data já passou
+  if (dataAlerta < new Date()) {
+    console.log(`Data ${dataISO} já passou, ignorando agendamento.`);
     return;
   }
   
-  const agora = new Date();
-  const [h, m] = hora.split(':').map(Number);
-  const dataAlerta = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), h, m, 0);
-  
-  // Se a hora já passou hoje, agendar para amanhã
-  if (dataAlerta < agora) {
-    dataAlerta.setDate(dataAlerta.getDate() + 1);
-    console.log('Hora já passou, reagendando para amanhã');
-  }
-  
-  const tempoRestante = dataAlerta.getTime() - agora.getTime();
+  const tempoRestante = dataAlerta.getTime() - Date.now();
   
   if (tempoRestante > 0) {
-    const timeoutId = setTimeout(() => {
-      enviarAlerta(titulo, mensagem, destino, dataDestino);
+    setTimeout(() => {
+      enviarAlerta(titulo, mensagem);
     }, tempoRestante);
     
-    notificacoesAgendadas.push(timeoutId);
-    console.log(`Alerta agendado para ${dataAlerta.toLocaleString()}: ${titulo}`);
-  } else if (tempoRestante > -60000) {
-    // Se passou menos de 1 minuto, enviar agora
-    console.log('Alerta atrasado por menos de 1 minuto, enviando agora');
-    enviarAlerta(titulo, mensagem, destino, dataDestino);
+    console.log(`Alerta agendado para ${dataISO} às ${hora}: ${titulo}`);
   }
 }
 
-function enviarAlerta(titulo, mensagem, destino, dataDestino) {
+function enviarAlerta(titulo, mensagem) {
   if (Notification.permission !== 'granted') return;
   
   const corpo = `Atenção: ${mensagem}`;
-  const data = {
-    type: 'alerta',
-    destino: destino,
-    data: dataDestino,
-    titulo: titulo,
-    mensagem: mensagem
-  };
   
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(reg => {
@@ -1411,69 +1423,53 @@ function enviarAlerta(titulo, mensagem, destino, dataDestino) {
         body: corpo,
         icon: 'icon-192.png',
         tag: 'alerta-' + Date.now(),
-        data: data,
         requireInteraction: true
       });
     }).catch(err => {
       console.error('Erro:', err);
       new Notification(titulo, {
         body: corpo,
-        icon: 'icon-192.png',
-        data: data
+        icon: 'icon-192.png'
       });
     });
   } else {
     new Notification(titulo, {
       body: corpo,
-      icon: 'icon-192.png',
-      data: data
+      icon: 'icon-192.png'
     });
   }
 }
 
 function agendarNotificacaoDiaria(config) {
+  console.log('Agendando notificação diária...');
+  
   // Agendar para amanhã no horário configurado
-  const agora = new Date();
-  const [horaConfig, minutoConfig] = config.horaDiaria.split(':').map(Number);
+  const amanha = new Date();
+  amanha.setDate(amanha.getDate() + 1);
+  amanha.setHours(parseInt(config.horaDiaria.split(':')[0]));
+  amanha.setMinutes(parseInt(config.horaDiaria.split(':')[1]));
+  amanha.setSeconds(0);
   
-  const dataNotificacao = new Date(
-    agora.getFullYear(),
-    agora.getMonth(),
-    agora.getDate(),
-    horaConfig,
-    minutoConfig,
-    0
-  );
-  
-  // Se já passou hoje, agendar para amanhã
-  if (dataNotificacao < agora) {
-    dataNotificacao.setDate(dataNotificacao.getDate() + 1);
-  }
-  
-  const tempoRestante = dataNotificacao.getTime() - agora.getTime();
-  
-  console.log(`Notificação diária agendada para: ${dataNotificacao.toLocaleString()}`);
-  console.log(`Tempo restante: ${Math.round(tempoRestante/60000)} minutos`);
+  const tempoRestante = amanha.getTime() - Date.now();
   
   if (tempoRestante > 0) {
-    const timeoutId = setTimeout(() => {
+    setTimeout(() => {
       enviarNotificacaoDiaria();
       // Reagendar para o próximo dia
-      setTimeout(() => agendarNotificacaoDiaria(config), 1000);
+      agendarNotificacaoDiaria(config);
     }, tempoRestante);
-    
-    notificacoesAgendadas.push(timeoutId);
   }
 }
 
 function enviarNotificacaoDiaria() {
   if (Notification.permission !== 'granted') return;
   
-  const hoje = getDataLocalISO();
+  const hoje = new Date().toISOString().split('T')[0];
   const notas = load('notas') || {};
   const temNotas = Array.isArray(notas[hoje]) && notas[hoje].length > 0;
   
   let corpo = 'Lembre-se de registrar seus pensamentos e sentimentos hoje. ✨';
+  
   if (temNotas) {
     corpo = 'Você tem notas registradas para hoje. Reveja-as para reflexão. 📖';
   }
@@ -1483,176 +1479,122 @@ function enviarNotificacaoDiaria() {
     corpo = `Atenção: Hoje é ${sabaHoje.nome}: ${sabaHoje.significado}`;
   }
   
-  const data = {
-    type: 'lembrete',
-    destino: 'planner',
-    data: hoje,
-    titulo: '🌙 Lembrete Diário do Grimório'
-  };
-  
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(reg => {
       reg.showNotification('🌙 Lembrete Diário do Grimório', {
         body: corpo,
         icon: 'icon-192.png',
-        tag: 'lembrete-diario-' + Date.now(),
-        data: data
+        tag: 'lembrete-diario-' + Date.now()
       });
     }).catch(err => {
       console.error('Erro:', err);
       new Notification('🌙 Lembrete Diário do Grimório', {
         body: corpo,
-        icon: 'icon-192.png',
-        data: data
+        icon: 'icon-192.png'
       });
     });
   } else {
     new Notification('🌙 Lembrete Diário do Grimório', {
       body: corpo,
-      icon: 'icon-192.png',
-      data: data
+      icon: 'icon-192.png'
     });
   }
 }
 
 function agendarLembretesNotas() {
   const notasComNotificacao = load('notasComNotificacao') || {};
-  const hoje = getDataLocalISO();
-  
-  console.log('Procurando lembretes para hoje:', hoje);
   
   Object.keys(notasComNotificacao).forEach(dataISO => {
-    // Comparar datas ISO com data local
-    if (dataISO !== hoje) {
-      console.log('Ignorando data:', dataISO, 'hoje é:', hoje);
-      return;
-    }
-    
     const notificacoes = notasComNotificacao[dataISO];
-    console.log('Encontradas', notificacoes.length, 'notificações para hoje');
     
     notificacoes.forEach((notificacao, index) => {
       const { horaNota, antecedencia, texto } = notificacao;
       
-      // Criar data LOCAL corretamente
-      const agora = new Date();
-      const [h, m] = horaNota.split(':').map(Number);
-      const dataNota = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate(), h, m, 0);
+      // Calcular data e hora da notificação
+      const dataNotificacao = new Date(dataISO + 'T' + horaNota);
+      dataNotificacao.setMinutes(dataNotificacao.getMinutes() - antecedencia);
       
-      // Subtrair antecedência
-      dataNota.setMinutes(dataNota.getMinutes() - antecedencia);
-      
-      const tempoRestante = dataNota.getTime() - Date.now();
-      
-      console.log(`Lembrete ${index}: horaNota=${horaNota}, antecedencia=${antecedencia}min`);
-      console.log(`Agendado para: ${dataNota.toLocaleString()}`);
-      console.log(`Tempo restante: ${Math.round(tempoRestante/60000)} minutos`);
+      const tempoRestante = dataNotificacao.getTime() - Date.now();
       
       if (tempoRestante > 0) {
-        const timeoutId = setTimeout(() => {
-          enviarLembreteNota(texto, horaNota, dataISO);
+        setTimeout(() => {
+          enviarLembreteNota(texto, horaNota);
         }, tempoRestante);
         
-        notificacoesAgendadas.push(timeoutId);
-      } else if (tempoRestante > -60000) {
-        // Se passou menos de 1 minuto, enviar agora
-        console.log('Lembrete atrasado, enviando agora...');
-        enviarLembreteNota(texto, horaNota, dataISO);
-      } else {
-        console.log('Lembrete já passou há mais de 1 minuto, ignorando...');
+        console.log(`Lembrete agendado para ${dataISO} às ${horaNota} (${antecedencia} min antes)`);
       }
     });
   });
 }
 
-function enviarLembreteNota(textoNota, horaNota, dataISO) {
+function enviarLembreteNota(textoNota, horaNota) {
   if (Notification.permission !== 'granted') return;
   
   const preview = textoNota.length > 50 ? textoNota.substring(0, 50) + '...' : textoNota;
-  const data = {
-    type: 'lembrete',
-    destino: 'planner',
-    data: dataISO,
-    hora: horaNota,
-    titulo: `📝 Lembrete de Nota - ${horaNota}`
-  };
   
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(reg => {
       reg.showNotification(`📝 Lembrete de Nota - ${horaNota}`, {
         body: preview,
         icon: 'icon-192.png',
-        tag: `lembrete-nota-${Date.now()}`,
-        data: data
+        tag: `lembrete-nota-${Date.now()}`
       });
     });
   } else {
     new Notification(`📝 Lembrete de Nota - ${horaNota}`, {
       body: preview,
-      icon: 'icon-192.png',
-      data: data
+      icon: 'icon-192.png'
     });
   }
 }
 
-// ===== HANDLE NOTIFICATION CLICK =====
-function handleNotificationClick(notificationData) {
-  console.log('Notificação clicada:', notificationData);
-  if (!notificationData) return;
-  
-  const { destino, data: dataDestino, type } = notificationData;
-  
-  // Fechar todas as telas primeiro
-  capa.style.display = 'none';
-  planner.style.display = 'none';
-  prospera.style.display = 'none';
-  
-  if (destino === 'planner') {
-    // Ir para o planner e abrir o dia correspondente
-    const p = load('perfil');
-    if (p) perfilEl.textContent = `${p.nome} · ${p.signo}`;
-    
-    // Configurar o mês correto
-    const dataObj = new Date(dataDestino);
-    mesAtual = dataObj.getMonth();
-    anoAtual = dataObj.getFullYear();
-    criarPlanner();
-    planner.style.display = 'block';
-    
-    // Abrir modal do dia
-    const dia = dataObj.getDate();
-    setTimeout(() => {
-      abrirModal(dataDestino, dia);
-    }, 500);
-  } else if (destino === 'prospera') {
-    // Ir para o livro da bruxa próspera
-    prospera.style.display = 'block';
-    
-    // Se houver dados financeiros específicos, pode rolar para a seção
-    if (notificationData.secao) {
-      setTimeout(() => {
-        const secao = document.getElementById(notificationData.secao);
-        if (secao) {
-          secao.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 500);
-    }
-  }
-}
-
-// Configurar listener para cliques em notificações (para navegadores sem Service Worker)
-if ('Notification' in window) {
-  Notification.requestPermission().then(permission => {
-    if (permission === 'granted') {
-      // Event listener para quando a notificação é clicada
-      window.addEventListener('notificationclick', function(event) {
-        event.notification.close();
-        if (event.notification.data) {
-          handleNotificationClick(event.notification.data);
+// ===== TESTE DE NOTIFICAÇÕES =====
+function adicionarBotaoTeste() {
+  setTimeout(() => {
+    const capaDiv = document.getElementById('capa');
+    if (capaDiv && !document.getElementById('btnTesteNotificacao')) {
+      const btnTeste = document.createElement('button');
+      btnTeste.id = 'btnTesteNotificacao';
+      btnTeste.className = 'secondary';
+      btnTeste.innerHTML = '🔔 Testar Notificação';
+      btnTeste.style.marginTop = '10px';
+      btnTeste.style.marginLeft = '10px';
+      
+      btnTeste.addEventListener('click', () => {
+        if (Notification.permission === 'granted') {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(reg => {
+              reg.showNotification('🔔 Teste de Notificação', {
+                body: 'Esta é uma notificação de teste do Grimório!',
+                icon: 'icon-192.png',
+                tag: 'teste'
+              });
+              alert('✅ Notificação de teste enviada!');
+            });
+          } else {
+            new Notification('🔔 Teste de Notificação', {
+              body: 'Esta é uma notificação de teste do Grimório!',
+              icon: 'icon-192.png'
+            });
+            alert('✅ Notificação de teste enviada!');
+          }
+        } else if (Notification.permission === 'default') {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              alert('✅ Permissão concedida! Clique novamente para testar.');
+            }
+          });
+        } else {
+          alert('❌ Permissão para notificações foi negada.');
         }
       });
+      
+      const btnAlterarNome = document.getElementById('btnAlterarNome');
+      if (btnAlterarNome && btnAlterarNome.parentNode) {
+        btnAlterarNome.parentNode.appendChild(btnTeste);
+      }
     }
-  });
+  }, 1000);
 }
 
 // ===== DADOS DAS PLANILHAS =====
@@ -1761,7 +1703,7 @@ const energiaSignoLunar = {
     'Lua Nova': 'Foco total na renovação da vida íntima, lar e família.',
     'Lua Crescente': 'Intensificação das emoções, proteção de quem se ama e fortalecimento de vínculos.',
     'Lua Cheia': 'Transbordamento emocional e sensibilidade máxima; colheita ligada ao acolhimento.',
-    'Lua Minguante': 'Convite para olhar para dentro, perdoar o passado e buscar paz com a própria história.'
+    'Lua Minguante': 'Convite para olhar para dentro, perdoar o pasto e buscar paz com a própria história.'
   },
   'Leão': {
     'Lua Nova': 'Novos começos ligados à autoexpressão, criatividade e prazer.',
@@ -1906,24 +1848,25 @@ const lunacoes2026 = {
 };
 
 const luaForaDeCurso = {
-  '2026-01-02': '09:23--10:09',
-  '2026-02-05': '14:10--15:02',
-  '2026-03-07': '22:40--23:30',
-  '2026-04-11': '06:15--07:01',
-  '2026-05-04': '18:50--19:44',
-  '2026-06-09': '03:12--04:00',
-  '2026-07-12': '11:30--12:18',
-  '2026-08-06': '20:05--21:00',
-  '2026-09-10': '08:44--09:33',
-  '2026-10-08': '16:10--17:02',
-  '2026-11-09': '01:22--02:10',
-  '2026-12-07': '13:40--14:28'
+  '2026-01-02': '09:23–10:09',
+  '2026-02-05': '14:10–15:02',
+  '2026-03-07': '22:40–23:30',
+  '2026-04-11': '06:15–07:01',
+  '2026-05-04': '18:50–19:44',
+  '2026-06-09': '03:12–04:00',
+  '2026-07-12': '11:30–12:18',
+  '2026-08-06': '20:05–21:00',
+  '2026-09-10': '08:44–09:33',
+  '2026-10-08': '16:10–17:02',
+  '2026-11-09': '01:22–02:10',
+  '2026-12-07': '13:40–14:28'
 };
 
 // ===== FUNÇÕES AUXILIARES =====
 function calcularNumeroEnergia(dataISO) {
   const perfil = load('perfil') || {};
   const dataNascimento = perfil.dataNascimento;
+  
   if (!dataNascimento) return null;
   
   try {
@@ -1931,11 +1874,13 @@ function calcularNumeroEnergia(dataISO) {
     const dia = parseInt(partes[2]);
     const mes = parseInt(partes[1]);
     const anoAtual = 2026;
+    
     let soma = dia + mes + anoAtual;
     
     while (soma > 9) {
       soma = soma.toString().split('').reduce((acc, num) => acc + parseInt(num), 0);
     }
+    
     return soma;
   } catch (e) {
     console.error('Erro ao calcular numerologia:', e);
@@ -1946,19 +1891,23 @@ function calcularNumeroEnergia(dataISO) {
 function determinarFaseCiclo(dataISO) {
   const perfil = load('perfil') || {};
   const ciclo = perfil.ciclo;
+  
   if (!ciclo) return null;
   
   try {
     const dataCiclo = new Date(ciclo);
     const dataAtual = new Date(dataISO);
+    
     const diffTime = dataAtual - dataCiclo;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
     const cicloDia = diffDays % 28;
     
     if (cicloDia >= 0 && cicloDia <= 7) return 'menstruacao';
     if (cicloDia >= 8 && cicloDia <= 14) return 'pre_ovulacao';
     if (cicloDia >= 15 && cicloDia <= 21) return 'ovulacao';
     return 'pre_menstrual';
+    
   } catch (e) {
     console.error('Erro ao determinar fase do ciclo:', e);
     return null;
@@ -1969,6 +1918,7 @@ function avaliarDia(dataISO) {
   const perfil = load('perfil') || {};
   const lua = lunacoes2026[dataISO];
   const saba = sabas2026[dataISO];
+  
   let oraculoHTML = '';
   
   if (saba) {
@@ -1979,6 +1929,7 @@ function avaliarDia(dataISO) {
   if (lua) {
     const energiaFase = energiasLunares[lua.fase] || {};
     const energiaSigno = energiaSignoLunar[lua.signo] || {};
+    
     oraculoHTML += `<strong>🌙 Lua em ${lua.signo}:</strong><br>`;
     oraculoHTML += `Dia de ${energiaFase.energiaPrincipal || 'energia lunar'}. `;
     oraculoHTML += `Momento para ${energiaSigno[lua.fase] || 'alinhar-se com a energia do signo'}.<br><br>`;
@@ -1988,6 +1939,7 @@ function avaliarDia(dataISO) {
   }
   
   oraculoHTML += `<strong>⚡ Energia do dia:</strong><br>`;
+  
   const numeroEnergia = calcularNumeroEnergia(dataISO);
   if (numeroEnergia && energiaNumerologia[numeroEnergia]) {
     const energiaNum = energiaNumerologia[numeroEnergia];
@@ -2035,30 +1987,31 @@ function criarPlanner() {
   const total = new Date(anoAtual, mesAtual + 1, 0).getDate();
   const inicio = new Date(anoAtual, mesAtual, 1).getDay();
   mesTitulo.textContent = new Date(anoAtual, mesAtual).toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-  
+
   for (let i = 0; i < inicio; i++) {
     const v = document.createElement('div');
     v.style.visibility = 'hidden';
     grid.appendChild(v);
   }
-  
+
   const notas = load('notas') || {};
   const sentimentos = load('sentimentos') || {};
-  
+
   for (let d = 1; d <= total; d++) {
     const dataISO = `${anoAtual}-${String(mesAtual + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const el = document.createElement('div');
     el.className = 'dia';
+
     let icones = '';
-    
     if (lunacoes2026[dataISO]) icones += lunacoes2026[dataISO].icone;
     if (sabas2026[dataISO]) icones += '🔥';
     if (luaForaDeCurso[dataISO]) icones += '⏳';
-    
+
     el.innerHTML = `<strong>${d}</strong>` + (icones ? `<div class="iconesTopo">${icones}</div>` : '');
-    
+
     if ((Array.isArray(notas[dataISO]) && notas[dataISO].length) || sentimentos[dataISO]) {
       el.innerHTML += `<span class="estrela">✶</span>`;
+      
       const p = document.createElement('div');
       p.className = 'preview';
       
@@ -2067,9 +2020,10 @@ function criarPlanner() {
       } else if (sentimentos[dataISO]) {
         p.textContent = '💖 ' + sentimentos[dataISO].substring(0, 40) + '...';
       }
+      
       el.appendChild(p);
     }
-    
+
     el.addEventListener('click', () => abrirModal(dataISO, d));
     grid.appendChild(el);
   }
@@ -2079,7 +2033,9 @@ function criarPlanner() {
 function abrirModal(dataISO, dia) {
   diaAtual = dataISO;
   document.getElementById('modalTitulo').textContent = `Dia ${dia}`;
+  
   oraculo.innerHTML = avaliarDia(dataISO);
+  
   notasSalvas.innerHTML = '';
   sentimentosSalvos.innerHTML = '';
   
@@ -2131,8 +2087,10 @@ function abrirModal(dataISO, dia) {
   
   document.getElementById('notaHora').value = '';
   document.getElementById('notaTexto').value = '';
+  
   const notificarNotaSelect = document.getElementById('notificarNota');
   const configNotificacaoDiv = document.getElementById('configNotificacao');
+  
   notificarNotaSelect.value = 'nao';
   configNotificacaoDiv.style.display = 'none';
   
@@ -2153,11 +2111,14 @@ function apagarNota(index) {
   }
   
   const notas = load('notas') || {};
+  
   if (Array.isArray(notas[diaAtual]) && notas[diaAtual][index]) {
     notas[diaAtual].splice(index, 1);
+    
     if (notas[diaAtual].length === 0) {
       delete notas[diaAtual];
     }
+    
     save('notas', notas);
     abrirModal(diaAtual, diaAtual.split('-')[2]);
     criarPlanner();
@@ -2170,6 +2131,7 @@ function apagarSentimento() {
   }
   
   const sentimentos = load('sentimentos') || {};
+  
   if (sentimentos[diaAtual]) {
     delete sentimentos[diaAtual];
     save('sentimentos', sentimentos);
@@ -2213,6 +2175,7 @@ function salvarNota() {
 
 function agendarNotificacaoNota(dataISO, horaNota, antecedenciaMinutos, textoNota) {
   const notasComNotificacao = load('notasComNotificacao') || {};
+  
   if (!Array.isArray(notasComNotificacao[dataISO])) {
     notasComNotificacao[dataISO] = [];
   }
@@ -2224,6 +2187,7 @@ function agendarNotificacaoNota(dataISO, horaNota, antecedenciaMinutos, textoNot
   });
   
   save('notasComNotificacao', notasComNotificacao);
+  
   // Reagendar todos os lembretes
   agendarLembretesNotas();
 }
@@ -2239,7 +2203,7 @@ function fecharModal() {
 function recalcular() {
   const categorias = ['sustento', 'florescimento', 'centelha', 'abundancia'];
   let somaTotal = 0;
-  
+
   categorias.forEach(cat => {
     let soma = 0;
     document.querySelectorAll(`#${cat} input[type="number"]`).forEach(i => {
@@ -2250,7 +2214,7 @@ function recalcular() {
     }
     somaTotal += soma;
   });
-  
+
   const totalAbundancia = Number(document.getElementById('total-abundancia').textContent) || 0;
   document.getElementById('saldo').textContent = (totalAbundancia - somaTotal).toFixed(2);
 }
@@ -2258,30 +2222,32 @@ function recalcular() {
 function addLinha(id, tipo) {
   const tbody = document.getElementById(id);
   if (!tbody) return;
-  
+
   const tr = document.createElement('tr');
+
   const tdDesc = document.createElement('td');
   const inputDesc = document.createElement('input');
   inputDesc.placeholder = tipo === 'ganho' ? 'Descreva o ganho' : 'Descreva o gasto';
   tdDesc.appendChild(inputDesc);
-  
+
   const tdValor = document.createElement('td');
   const inputValor = document.createElement('input');
   inputValor.type = 'number';
   inputValor.placeholder = '0.00';
   inputValor.oninput = recalcular;
   tdValor.appendChild(inputValor);
-  
+
   const tdAcao = document.createElement('td');
   const btnRemover = document.createElement('button');
   btnRemover.textContent = '✖';
   btnRemover.className = 'remover';
   btnRemover.onclick = () => tr.remove();
   tdAcao.appendChild(btnRemover);
-  
+
   tr.appendChild(tdDesc);
   tr.appendChild(tdValor);
   tr.appendChild(tdAcao);
+
   tbody.appendChild(tr);
 }
 
@@ -2336,98 +2302,11 @@ addLinha('sustento');
 addLinha('abundancia', 'ganho');
 addLinha('florescimento');
 addLinha('centelha');
-  // ===== TESTE DIRETO DE NOTIFICAÇÃO =====
-console.log('=== INICIANDO TESTE DIRETO ===');
 
-// Espera 5 segundos e envia uma notificação FIXA
-setTimeout(() => {
-  console.log('Enviando notificação de teste em 5 segundos...');
-  
-  setTimeout(() => {
-    console.log('=== ENVIANDO NOTIFICAÇÃO DE TESTE ===');
-    
-    if (Notification.permission !== 'granted') {
-      console.log('❌ Permissão NÃO concedida:', Notification.permission);
-      return;
-    }
-    
-    console.log('✅ Permissão CONCEDIDA');
-    console.log('Tentando enviar notificação...');
-    
-    try {
-      // Tenta pelo Service Worker primeiro
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(registration => {
-          console.log('Service Worker pronto, enviando via SW...');
-          
-          registration.showNotification('🔮 TESTE GRIMÓRIO', {
-            body: 'Esta é uma notificação de TESTE via Service Worker',
-            icon: 'icon-192.png',
-            tag: 'teste-direct-' + Date.now(),
-            requireInteraction: true,
-            data: {
-              type: 'teste',
-              destino: 'planner',
-              data: new Date().toISOString().split('T')[0]
-            }
-          }).then(() => {
-            console.log('✅ Notificação ENVIADA via Service Worker');
-          }).catch(err => {
-            console.error('❌ Erro via Service Worker:', err);
-            // Fallback
-            enviarNotificacaoDireta();
-          });
-        }).catch(err => {
-          console.error('Service Worker não pronto:', err);
-          enviarNotificacaoDireta();
-        });
-      } else {
-        console.log('Service Worker não disponível, enviando direto...');
-        enviarNotificacaoDireta();
-      }
-    } catch (error) {
-      console.error('❌ ERRO GRAVE:', error);
-    }
-    
-    function enviarNotificacaoDireta() {
-      try {
-        const notif = new Notification('🔮 TESTE GRIMÓRIO', {
-          body: 'Esta é uma notificação de TESTE direta',
-          icon: 'icon-192.png',
-          tag: 'teste-direct-' + Date.now()
-        });
-        console.log('✅ Notificação ENVIADA diretamente');
-        
-        notif.onclick = () => {
-          console.log('Notificação clicada!');
-        };
-        
-      } catch (error) {
-        console.error('❌ Falha na notificação direta:', error);
-      }
-    }
-    
-  }, 5000); // 5 segundos
-  
-}, 1000);
-
-// ===== VERIFICAÇÕES EXTRAS =====
-console.log('=== VERIFICAÇÕES ===');
-console.log('1. Permissão:', Notification.permission);
-console.log('2. Service Worker:', 'serviceWorker' in navigator);
-console.log('3. Online:', navigator.onLine);
-console.log('4. User Agent:', navigator.userAgent);
-console.log('5. Platform:', navigator.platform);
-
-// Verifica se o Service Worker está registrado
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    console.log('Service Workers registrados:', registrations.length);
-    registrations.forEach((reg, i) => {
-      console.log(`SW ${i}:`, reg.scope);
-    });
-  });
-}
+// Adicionar botão de teste após carregar
+window.addEventListener('load', () => {
+  setTimeout(adicionarBotaoTeste, 1500);
+});
 </script>
 </body>
 </html>
