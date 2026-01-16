@@ -1204,73 +1204,70 @@ function solicitarPermissaoNotificacao() {
 }
 
 function agendarNotificacoes() {
-  console.log('Agendando notificações corretamente...');
-
   const config = load('configNotificacoes');
   if (!config) return;
 
   const agora = new Date();
 
-  // =====================
-  // 🔥 SABÁS
-  // =====================
-  Object.entries(sabas2026).forEach(([dataISO, saba]) => {
-    const dataEvento = new Date(`${dataISO}T00:00:00`);
+  // =========================
+  // 🔥 PRÓXIMO SABÁ
+  // =========================
+  const proximoSaba = Object.entries(sabas2026)
+    .map(([dataISO, saba]) => ({
+      data: new Date(`${dataISO}T00:00:00`),
+      saba
+    }))
+    .filter(e => e.data > agora)
+    .sort((a, b) => a.data - b.data)[0];
+
+  if (proximoSaba) {
     const antecedencia = parseInt(config.antecedenciaSabas);
+    const alerta = new Date(proximoSaba.data);
+    alerta.setDate(alerta.getDate() - antecedencia);
 
-    const dataNotificacao = new Date(dataEvento);
-    dataNotificacao.setDate(dataEvento.getDate() - antecedencia);
+    const [h, m] = config.horaSabas.split(':').map(Number);
+    alerta.setHours(h, m, 0, 0);
 
-    const [hora, minuto] = config.horaSabas.split(':').map(Number);
-    dataNotificacao.setHours(hora, minuto, 0, 0);
-
-    if (dataNotificacao > agora) {
+    if (alerta > agora) {
       setTimeout(() => {
         enviarNotificacao(
-          `🔥 Sabá se aproxima: ${saba.nome}`,
-          `Faltam ${antecedencia} dias para ${saba.nome}.`
+          `🔥 Sabá se aproxima`,
+          `Faltam ${antecedencia} dias para ${proximoSaba.saba.nome}.`
         );
-      }, dataNotificacao - agora);
+      }, alerta - agora);
     }
+  }
 
-    if (dataEvento > agora) {
-      setTimeout(() => {
-        enviarNotificacao(
-          `🔥 Hoje é ${saba.nome}`,
-          `Celebração do sabá ${saba.nome}.`
-        );
-      }, dataEvento - agora);
-    }
-  });
+  // =========================
+  // 🌙 PRÓXIMA LUA
+  // =========================
+  const proximaLua = Object.entries(lunacoes2026)
+    .map(([dataISO, lua]) => ({
+      data: new Date(`${dataISO}T${lua.hora || '09:00'}:00`),
+      lua
+    }))
+    .filter(e => e.data > agora)
+    .sort((a, b) => a.data - b.data)[0];
 
-  // =====================
-  // 🌙 LUAÇÕES
-  // =====================
-  Object.entries(lunacoes2026).forEach(([dataISO, lua]) => {
-    const dataEvento = new Date(`${dataISO}T${lua.hora || '09:00'}:00`);
-
-    // 🔔 24h antes
-    const alerta24h = new Date(dataEvento.getTime() - 24 * 60 * 60 * 1000);
+  if (proximaLua) {
+    const alerta24h = new Date(proximaLua.data.getTime() - 86400000);
 
     if (alerta24h > agora) {
       setTimeout(() => {
         enviarNotificacao(
-          `🌙 Amanhã: ${lua.fase}`,
-          `Prepare-se para a ${lua.fase} em ${lua.signo}.`
+          `🌙 Amanhã: ${proximaLua.lua.fase}`,
+          `Lua em ${proximaLua.lua.signo}.`
         );
       }, alerta24h - agora);
     }
 
-    // 🔔 No momento exato
-    if (dataEvento > agora) {
-      setTimeout(() => {
-        enviarNotificacao(
-          `🌙 Lua em transição`,
-          `${lua.fase} em ${lua.signo} agora.`
-        );
-      }, dataEvento - agora);
-    }
-  });
+    setTimeout(() => {
+      enviarNotificacao(
+        `🌙 Lua em transição`,
+        `${proximaLua.lua.fase} em ${proximaLua.lua.signo} agora.`
+      );
+    }, proximaLua.data - agora);
+  }
 }
 
 function agendarNotificacaoDiaria(config) {
