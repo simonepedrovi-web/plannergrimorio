@@ -1,4 +1,10 @@
-o código do service work está assim: self.addEventListener('install', () => {
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', () => {
+  self.clients.claim();
+});self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
