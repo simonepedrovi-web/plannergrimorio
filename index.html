@@ -1196,9 +1196,21 @@ btnSalvarConfigNotificacoes.addEventListener('click', () => {
   };
   
   save('configNotificacoes', config);
+  
+  // Parar todas as notificações atuais
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.getNotifications().then(notifications => {
+        notifications.forEach(notification => notification.close());
+      });
+    });
+  }
+  
+  // Reagendar com novas configurações
   agendarNotificacoes();
+  
   modalNotificacoes.style.display = 'none';
-  alert('Configurações de notificações salvas!');
+  alert('✅ Configurações de notificações salvas! As notificações foram reagendadas.');
 });
 
 // ===== FORMULÁRIO =====
@@ -1321,16 +1333,83 @@ function agendarNotificacoes() {
     return;
   }
   
-  // Cancelar todas as notificações anteriores
-  cancelarTodasNotificacoes();
+  // Limpar notificações antigas primeiro
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.getNotifications().then(notifications => {
+        notifications.forEach(notification => notification.close());
+      });
+    });
+  }
   
-  // Agendar notificações de ALERTAS (eventos fixos)
-  agendarAlertasFixos(config);
+  // Agendar notificação diária
+  agendarNotificacaoDiaria(config);
   
-  // Agendar notificações de LEMBRETES (notas da usuária)
-  agendarLembretesNotas();
+  // Agendar notificações de Sabás CORRIGIDO - só nas datas específicas
+  if (config.notificarSabas === 'sim') {
+    agendarNotificacoesSabas(config);
+  }
+  
+  // Agendar notificações de fases lunares
+  agendarNotificacoesLunares();
+  
+  // Agendar notificações de notas
+  agendarNotificacoesNotas();
 }
 
+
+    // ==== ADICIONE ESTAS FUNÇÕES NOVAS ====
+
+function agendarNotificacoesLunares() {
+  console.log('Agendando notificações lunares...');
+  
+  const hoje = new Date();
+  
+  Object.keys(lunacoes2026).forEach(dataLua => {
+    const dataLuaObj = new Date(dataLua + 'T00:00:00');
+    const lua = lunacoes2026[dataLua];
+    
+    // Notificar no próprio dia da fase lunar
+    if (dataLuaObj.toISOString().split('T')[0] === hoje.toISOString().split('T')[0]) {
+      // Agendar para 8:00 da manhã
+      const dataNotificacao = new Date(dataLuaObj);
+      dataNotificacao.setHours(8, 0, 0, 0);
+      
+      // Se já passou das 8h, notificar em 30 segundos (para teste)
+      if (dataNotificacao < hoje) {
+        dataNotificacao.setTime(hoje.getTime() + 30000);
+      }
+      
+      const diferencaMs = dataNotificacao - hoje;
+      
+      setTimeout(() => {
+        enviarNotificacaoLunar(lua);
+      }, diferencaMs);
+    }
+  });
+}
+
+function enviarNotificacaoLunar(lua) {
+  if (Notification.permission !== 'granted') return;
+  
+  const titulo = `🌙 ALERTA: ${lua.fase} em ${lua.signo}`;
+  const mensagem = `Hoje temos ${lua.fase.toLowerCase()} em ${lua.signo}. `;
+  
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification(titulo, {
+        body: mensagem + 'Aproveite essa energia!',
+        icon: 'icon-192.png',
+        tag: `lua-${lua.fase}-${new Date().toISOString().split('T')[0]}`
+      });
+    });
+  } else {
+    new Notification(titulo, {
+      body: mensagem + 'Aproveite essa energia!',
+      icon: 'icon-192.png'
+    });
+  }
+}
 function cancelarTodasNotificacoes() {
   // Esta função limpa notificações antigas ao recarregar as configurações
   if ('serviceWorker' in navigator) {
