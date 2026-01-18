@@ -1,39 +1,3 @@
-Skip to content
-Navigation Menu
-bruxapronta
-plannergrimorio
-
-Type / to search
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-Files
-Go to file
-t
-icon-192.png
-icon-512.png
-index.html
-manifest.json
-sw.js
-plannergrimorio
-/index.html
-bruxapronta
-bruxapronta
-Update index.html
-547c635
- · 
-1 hour ago
-
-Code
-
-Blame
-2644 lines (2275 loc) · 87.1 KB
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1240,72 +1204,41 @@ function solicitarPermissaoNotificacao() {
 }
 
 function agendarNotificacoes() {
+  console.log('Agendando notificações...');
+  
   const config = load('configNotificacoes');
-  if (!config) return;
-    
-agendarNotificacaoDiaria(config);
-    
-  const agora = new Date();
-
-  // =========================
-  // 🔥 PRÓXIMO SABÁ
-  // =========================
-  const proximoSaba = Object.entries(sabas2026)
-    .map(([dataISO, saba]) => ({
-      data: new Date(`${dataISO}T00:00:00`),
-      saba
-    }))
-    .filter(e => e.data > agora)
-    .sort((a, b) => a.data - b.data)[0];
-
-  if (proximoSaba) {
-    const antecedencia = parseInt(config.antecedenciaSabas);
-    const alerta = new Date(proximoSaba.data);
-    alerta.setDate(alerta.getDate() - antecedencia);
-
-    const [h, m] = config.horaSabas.split(':').map(Number);
-    alerta.setHours(h, m, 0, 0);
-
-    if (alerta > agora) {
-      setTimeout(() => {
-        enviarNotificacao(
-          `🔥 Sabá se aproxima`,
-          `Faltam ${antecedencia} dias para ${proximoSaba.saba.nome}.`
-        );
-      }, alerta - agora);
-    }
+  if (!config || config.ativas === 'nao') {
+    console.log('Notificações desativadas.');
+    return;
   }
-
-  // =========================
-  // 🌙 PRÓXIMA LUA
-  // =========================
-  const proximaLua = Object.entries(lunacoes2026)
-    .map(([dataISO, lua]) => ({
-      data: new Date(`${dataISO}T${lua.hora || '09:00'}:00`),
-      lua
-    }))
-    .filter(e => e.data > agora)
-    .sort((a, b) => a.data - b.data)[0];
-
-  if (proximaLua) {
-    const alerta24h = new Date(proximaLua.data.getTime() - 86400000);
-
-    if (alerta24h > agora) {
-      setTimeout(() => {
-        enviarNotificacao(
-          `🌙 Amanhã: ${proximaLua.lua.fase}`,
-          `Lua em ${proximaLua.lua.signo}.`
-        );
-      }, alerta24h - agora);
-    }
-
-    setTimeout(() => {
-      enviarNotificacao(
-        `🌙 Lua em transição`,
-        `${proximaLua.lua.fase} em ${proximaLua.lua.signo} agora.`
-      );
-    }, proximaLua.data - agora);
+  
+  if (Notification.permission !== 'granted') {
+    console.log('Permissão não concedida.');
+    return;
   }
+  
+  // Limpar notificações antigas primeiro
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.getNotifications().then(notifications => {
+        notifications.forEach(notification => notification.close());
+      });
+    });
+  }
+  
+  // Agendar notificação diária
+  agendarNotificacaoDiaria(config);
+  
+  // Agendar notificações de Sabás CORRIGIDO - só nas datas específicas
+  if (config.notificarSabas === 'sim') {
+    agendarNotificacoesSabas(config);
+  }
+  
+  // Agendar notificações de fases lunares
+  agendarNotificacoesLunares();
+  
+  // Agendar notificações de notas
+  agendarNotificacoesNotas();
 }
 
 function agendarNotificacaoDiaria(config) {
@@ -2675,8 +2608,128 @@ addLinha('abundancia', 'ganho');
 addLinha('florescimento');
 addLinha('centelha');
 
+// ===== BOTÃO DE TESTE TEMPORÁRIO =====
+setTimeout(() => {
+  if (document.getElementById('capa') && !document.getElementById('btnTesteNota')) {
+    const btnTeste = document.createElement('button');
+    btnTeste.id = 'btnTesteNota';
+    btnTeste.innerHTML = '🔔 Testar Notificação de Nota';
+    btnTeste.style.margin = '10px';
+    btnTeste.onclick = () => {
+      enviarNotificacaoNota(
+        'Esta é uma nota de teste do planner ritualístico!',
+        '14:30',
+        'teste-' + Date.now()
+      );
+    };
+    
+    const capaDiv = document.getElementById('capa');
+    if (capaDiv) {
+      const primeiroBotao = capaDiv.querySelector('button');
+      if (primeiroBotao) {
+        primeiroBotao.parentNode.insertBefore(btnTeste, primeiroBotao.nextSibling);
+      }
+    }
+  }
+}, 2000);
 </script>
+
+<script>
+/* ================================
+   LIVRO DA BRUXA PRÓSPERA
+   Integração mensal + lunar
+   NÃO altera planner nem luas
+================================ */
+(function () {
+
+  function moeda(v) {
+    return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  function mesAtual() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  function livro() {
+    return JSON.parse(localStorage.getItem('livroProspera')) || {};
+  }
+
+  function salvar(dados) {
+    localStorage.setItem('livroProspera', JSON.stringify(dados));
+  }
+
+  function faseLua(data) {
+    if (typeof window.getFaseLunar === 'function') {
+      return window.getFaseLunar(new Date(data));
+    }
+    return '';
+  }
+
+  function garantirMes(mes) {
+    const dados = livro();
+    if (!dados[mes]) {
+      dados[mes] = { entradas: [], saidas: [], leitura: '' };
+      salvar(dados);
+    }
+    return dados;
+  }
+
+  function totais(m) {
+    const e = m.entradas.reduce((s, i) => s + i.valor, 0);
+    const s = m.saidas.reduce((s, i) => s + i.valor, 0);
+    return { e, s, saldo: e - s };
+  }
+
+  function render() {
+    const mes = mesAtual();
+    const dados = garantirMes(mes)[mes];
+    const t = totais(dados);
+
+    const elE = document.getElementById('total-entradas');
+    const elS = document.getElementById('total-saidas');
+    const elSaldo = document.getElementById('saldo-mes');
+    const tabela = document.getElementById('tabela-movimentos');
+    const leitura = document.getElementById('leitura-mensal');
+
+    if (!elE || !elS || !elSaldo || !tabela || !leitura) return;
+
+    elE.textContent = moeda(t.e);
+    elS.textContent = moeda(t.s);
+    elSaldo.textContent = moeda(t.saldo);
+    elSaldo.className = t.saldo >= 0 ? 'positivo' : 'negativo';
+
+    tabela.innerHTML = '';
+
+    [...dados.entradas.map(i => ({ ...i, tipo: 'Entrada' })),
+     ...dados.saidas.map(i => ({ ...i, tipo: 'Saída' }))]
+    .sort((a, b) => new Date(a.data) - new Date(b.data))
+    .forEach(i => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i.data}</td>
+        <td>${i.descricao}</td>
+        <td>${i.tipo}</td>
+        <td>${moeda(i.valor)}</td>
+      `;
+      tabela.appendChild(tr);
+    });
+
+    leitura.value = dados.leitura || '';
+  }
+
+  document.addEventListener('input', e => {
+    if (e.target.id !== 'leitura-mensal') return;
+    const mes = mesAtual();
+    const dados = garantirMes(mes);
+    dados[mes].leitura = e.target.value;
+    salvar(dados);
+  });
+
+  document.addEventListener('DOMContentLoaded', render);
+
+})();
+</script>
+
 </body>
 </html>
-plannergrimorio/index.html at main · bruxapronta/plannergrimorio 
-
