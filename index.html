@@ -1206,7 +1206,9 @@ function solicitarPermissaoNotificacao() {
 function agendarNotificacoes() {
   const config = load('configNotificacoes');
   if (!config) return;
-
+    
+agendarNotificacaoDiaria(config);
+    
   const agora = new Date();
 
   // =========================
@@ -2636,12 +2638,6 @@ addLinha('sustento');
 addLinha('abundancia', 'ganho');
 addLinha('florescimento');
 addLinha('centelha');
-  
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof agendarAlertaDoDia === 'function') {
-    agendarAlertaDoDia();
-  }
-});
 
 </script>
 </body>
