@@ -12,6 +12,62 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   
   <style>
+        alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.alert-modal {
+  background: #fdfbf7;
+  color: #2b2b2b;
+  width: 90%;
+  max-width: 420px;
+  max-height: 85vh;
+  border-radius: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  font-family: system-ui, sans-serif;
+}
+
+.alert-modal h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.alert-section {
+  margin-bottom: 16px;
+}
+
+.alert-section h3 {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.alert-section ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.alert-section li {
+  margin-bottom: 4px;
+}
+
+.alert-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #3b3b3b;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
     /* VARIÁVEIS DE CORES - PALETA ACESSÍVEL 2026 */
     :root {
       /* Cores neutras orgânicas - PAPEL COMO PADRÃO DEFINITIVO */
@@ -871,7 +927,42 @@
     <button id="btnConfigNotificacoes" class="secondary">🔔 Configurar Notificações</button>
   </div>
 </div>
+<!-- Overlay -->
+<div id="alert-overlay" class="alert-overlay">
 
+  
+  <!-- Janela -->
+  <div class="alert-modal">
+    
+    <h2>🔔 Alertas do Dia</h2>
+
+    <!-- BLOCO 1 -->
+    <section class="alert-section">
+      <h3>🔮 Eventos do Dia</h3>
+      <ul>
+        <li>🌙 Lua Nova em Capricórnio</li>
+        <li>☀️ Sol entra em Aquário</li>
+        <li>🔥 Sabá: Imbolc</li>
+      </ul>
+    </section>
+
+    <!-- BLOCO 2 -->
+    <section class="alert-section">
+      <h3>📝 Compromissos</h3>
+      <p>Você tem 2 registros hoje.</p>
+      <p><strong>Ritual sugerido:</strong> Escrita de intenções e organização prática.</p>
+    </section>
+
+    <!-- BLOCO 3 -->
+    <section class="alert-section">
+      <h3>💰 Finanças</h3>
+      <p>Conta de luz vence hoje.</p>
+    </section>
+
+<button id="fechar-alertas" class="alert-btn">ok, entendi</button>
+
+  </div>
+    
 <!-- PLANNER -->
 <div id="planner">
   <div class="top-nav"><button id="voltarCapa" class="secondary">⟵ Capa</button></div>
@@ -1074,6 +1165,30 @@
 </main>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const hoje = new Date().toISOString().split('T')[0];
+    const ultimaExibicao = localStorage.getItem('alertas_exibidos_em');
+
+    const overlay = document.getElementById('alert-overlay');
+    const botaoFechar = document.getElementById('fechar-alertas');
+
+    // Se já mostrou hoje, não exibe
+    if (ultimaExibicao === hoje) {
+      if (overlay) overlay.style.display = 'none';
+      return;
+    }
+
+    // Caso contrário, mostra o alerta
+    if (overlay) overlay.style.display = 'flex';
+
+    // Ao fechar, salva a data
+    if (botaoFechar) {
+      botaoFechar.addEventListener('click', () => {
+        localStorage.setItem('alertas_exibidos_em', hoje);
+        overlay.style.display = 'none';
+      });
+    }
+  });
 // ===== VARIÁVEIS GLOBAIS =====
 let deferredPrompt = null;
 
@@ -2228,13 +2343,13 @@ function avaliarDia(dataISO) {
   }
   
   if (lua) {
-    const energiaFase = energiasLunares[lua.fase] || {};
-    const energiaSigno = energiaSignoLunar[lua.signo] || {};
-    
-    oraculoHTML += `<strong>🌙 Lua em ${lua.signo}:</strong><br>`;
-    oraculoHTML += `Dia de ${energiaFase.energiaPrincipal || 'energia lunar'}. `;
-    oraculoHTML += `Momento para ${energiaSigno[lua.fase] || 'alinhar-se com a energia do signo'}.<br><br>`;
-  } else {
+  const energiaFase = energiasLunares[lua.fase] || {};
+  const energiaSigno = energiaSignoLunar[lua.signo] || {};
+  
+  oraculoHTML += `<strong>🌙 Lua ${lua.fase} em ${lua.signo}:</strong><br>`;
+  oraculoHTML += `Dia de ${energiaFase.energiaPrincipal || 'energia lunar'}. `;
+  oraculoHTML += `Momento para ${energiaSigno[lua.fase] || 'alinhar-se com a energia do signo'}.<br><br>`;
+} else {
     oraculoHTML += `<strong>🌙 Lua em trânsito:</strong><br>`;
     oraculoHTML += `Continuidade do ciclo lunar em andamento.<br><br>`;
   }
