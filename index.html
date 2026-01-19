@@ -12,49 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   
   <style>
-      .overlay-alertas {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.overlay-conteudo {
-  background: #111;
-  color: #f5f5f5;
-  max-width: 520px;
-  width: 90%;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 0 30px rgba(255,255,255,0.1);
-  font-family: system-ui, sans-serif;
-}
-
-.overlay-conteudo h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.bloco-alerta {
-  margin-bottom: 16px;
-  line-height: 1.6;
-}
-
-#btn-fechar-overlay {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background: #6b4eff;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-      
     /* VARIÁVEIS DE CORES - PALETA ACESSÍVEL 2026 */
     :root {
       /* Cores neutras orgânicas - PAPEL COMO PADRÃO DEFINITIVO */
@@ -120,6 +77,130 @@
       pointer-events: none;
       font-family: var(--font-mystic);
       color: var(--color-text-secondary);
+    }
+
+    /* MODAL DE ALERTAS DIÁRIOS */
+    #alertasDiarios {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    #alertasContainer {
+      background: var(--color-bone-white);
+      width: 90%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-deep);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alertas-header {
+      background: linear-gradient(135deg, var(--color-transformative-teal), var(--color-deep-teal));
+      color: white;
+      padding: 24px;
+      border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .alertas-body {
+      padding: 24px;
+    }
+
+    .alerta-bloco {
+      margin-bottom: 24px;
+      padding: 20px;
+      border-radius: var(--border-radius-md);
+      border-left: 4px solid;
+      background: white;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .alerta-bloco.astrologia {
+      border-left-color: var(--color-mystic-purple);
+      background: linear-gradient(to right, rgba(126, 87, 194, 0.05), white);
+    }
+
+    .alerta-bloco.compromissos {
+      border-left-color: var(--color-transformative-teal);
+      background: linear-gradient(to right, rgba(42, 122, 122, 0.05), white);
+    }
+
+    .alerta-bloco.financeiro {
+      border-left-color: var(--color-sunset-amber);
+      background: linear-gradient(to right, rgba(255, 138, 80, 0.05), white);
+    }
+
+    .alerta-titulo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: var(--color-deep-teal);
+    }
+
+    .alerta-conteudo {
+      color: var(--color-text-primary);
+      line-height: 1.5;
+    }
+
+    .alerta-item {
+      margin: 8px 0;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .alerta-item:last-child {
+      border-bottom: none;
+    }
+
+    .sem-eventos {
+      color: var(--color-text-secondary);
+      font-style: italic;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .alertas-footer {
+      padding: 20px 24px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .lembrete-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
     }
 
     /* TELA DE INSTALAÇÃO */
@@ -852,8 +933,30 @@
     h4 { margin-bottom: 0.75rem; }
   </style>
 </head>
-    
 <body>
+
+<!-- MODAL DE ALERTAS DIÁRIOS -->
+<div id="alertasDiarios">
+  <div id="alertasContainer">
+    <div class="alertas-header">
+      <h2 style="color:white; margin:0;">🌙 Alertas do Grimório</h2>
+      <p style="opacity:0.9; margin:8px 0 0 0;">Resumo diário de eventos, compromissos e finanças</p>
+    </div>
+    <div class="alertas-body" id="alertasConteudo">
+      <!-- Conteúdo dos alertas será inserido aqui pelo JavaScript -->
+    </div>
+    <div class="alertas-footer">
+      <div class="lembrete-checkbox">
+        <input type="checkbox" id="naoMostrarHoje">
+        <label for="naoMostrarHoje">Não mostrar novamente hoje</label>
+      </div>
+      <button id="fecharAlertas">✨ Continuar para o Grimório</button>
+      <p style="font-size:0.8rem; opacity:0.7; margin:0;">
+        Os alertas aparecerão sempre na primeira abertura, a menos que você opte por não vê-los.
+      </p>
+    </div>
+  </div>
+</div>
 
 <!-- TELA DE INSTALAÇÃO -->
 <div id="installOverlay">
@@ -913,6 +1016,7 @@
   <div style="margin-top:30px;">
     <button id="btnAlterarNome" class="secondary">✏️ Alterar meus dados</button>
     <button id="btnConfigNotificacoes" class="secondary">🔔 Configurar Notificações</button>
+    <button id="btnGerenciarAlertas" class="secondary">🔔 Gerenciar Alertas</button>
   </div>
 </div>
 
@@ -1036,6 +1140,56 @@
   </div>
 </div>
 
+<!-- MODAL DE GERENCIAMENTO DE ALERTAS -->
+<div id="modalAlertasConfig" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:2000; padding:20px;">
+  <div style="background:var(--color-bone-white); padding:24px; border-radius:var(--border-radius-lg); width:100%; max-width:500px; box-sizing:border-box; max-height:90vh; overflow-y:auto;">
+    <h3 style="color:var(--color-transformative-teal);margin-bottom:20px;">🔔 Gerenciar Alertas Diários</h3>
+    
+    <div class="notificacoes-section">
+      <label for="alertasAtivos">📢 Alertas diários ativos?</label>
+      <select id="alertasAtivos">
+        <option value="sempre">Sempre mostrar na primeira abertura</option>
+        <option value="somente_marcados">Mostrar apenas quando marcar "não mostrar hoje"</option>
+        <option value="nunca">Nunca mostrar alertas</option>
+      </select>
+      
+      <div id="configExibirAlertas" style="margin-top:20px;">
+        <h4 style="color:var(--color-transformative-teal);margin-bottom:12px;">Personalizar Exibição</h4>
+        
+        <div class="lembrete-checkbox" style="justify-content:flex-start; margin-bottom:12px;">
+          <input type="checkbox" id="mostrarAstrologia" checked>
+          <label for="mostrarAstrologia">🌙 Mostrar eventos astrológicos</label>
+        </div>
+        
+        <div class="lembrete-checkbox" style="justify-content:flex-start; margin-bottom:12px;">
+          <input type="checkbox" id="mostrarCompromissos" checked>
+          <label for="mostrarCompromissos">📝 Mostrar compromissos do dia</label>
+        </div>
+        
+        <div class="lembrete-checkbox" style="justify-content:flex-start; margin-bottom:12px;">
+          <input type="checkbox" id="mostrarFinanceiro" checked>
+          <label for="mostrarFinanceiro">💰 Mostrar alertas financeiros</label>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px; padding:16px; background:rgba(181, 168, 255, 0.1); border-radius:var(--border-radius-sm);">
+        <h4 style="color:var(--color-mystic-purple);margin-bottom:8px;">📋 Limpar Preferências</h4>
+        <p style="font-size:0.9rem; margin-bottom:12px;">Remove todas as escolhas de "não mostrar hoje"</p>
+        <button id="btnLimparPreferencias" class="secondary" style="width:100%;">🧹 Limpar Todas as Preferências</button>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button id="btnSalvarConfigAlertas">💾 Salvar Configurações</button>
+      <button id="btnFecharAlertasConfig" class="secondary">✖ Fechar</button>
+    </div>
+    
+    <p style="font-size:0.875rem;margin-top:15px;opacity:0.8;">
+      Os alertas fornecem um resumo diário personalizado baseado em seus dados.
+    </p>
+  </div>
+</div>
+
 <!-- BRUXA PRÓSPERA -->
 <div id="prospera">
   <div class="top-nav"><button id="voltarCapa2" class="secondary">⟵ Capa</button></div>
@@ -1122,6 +1276,16 @@
 let deferredPrompt = null;
 
 // ===== ELEMENTOS =====
+const alertasDiarios = document.getElementById('alertasDiarios');
+const alertasConteudo = document.getElementById('alertasConteudo');
+const fecharAlertas = document.getElementById('fecharAlertas');
+const naoMostrarHoje = document.getElementById('naoMostrarHoje');
+const btnGerenciarAlertas = document.getElementById('btnGerenciarAlertas');
+const modalAlertasConfig = document.getElementById('modalAlertasConfig');
+const btnFecharAlertasConfig = document.getElementById('btnFecharAlertasConfig');
+const btnSalvarConfigAlertas = document.getElementById('btnSalvarConfigAlertas');
+const btnLimparPreferencias = document.getElementById('btnLimparPreferencias');
+
 const installOverlay = document.getElementById('installOverlay');
 const formOverlay = document.getElementById('formOverlay');
 const btnInstalarPWA = document.getElementById('btnInstalarPWA');
@@ -1157,6 +1321,373 @@ function load(k) {
   const v = localStorage.getItem(k);
   return v ? JSON.parse(v) : null;
 }
+
+// ===== SISTEMA DE ALERTAS DIÁRIOS =====
+function verificarAlertaDiario() {
+  const hoje = new Date().toISOString().split('T')[0];
+  
+  // Carregar configurações dos alertas
+  const configAlertas = load('configAlertas') || {
+    ativos: 'sempre',
+    mostrarAstrologia: true,
+    mostrarCompromissos: true,
+    mostrarFinanceiro: true
+  };
+  
+  // Se configurado para nunca mostrar
+  if (configAlertas.ativos === 'nunca') {
+    return false;
+  }
+  
+  // Se configurado para mostrar apenas quando marcado "não mostrar hoje"
+  if (configAlertas.ativos === 'somente_marcados') {
+    // Verificar se o usuário NÃO marcou "não mostrar hoje" para hoje
+    const alertasOcultos = load('alertasOcultos') || {};
+    if (!alertasOcultos[hoje]) {
+      return true; // Mostrar porque NÃO marcou para não ver
+    }
+    return false; // Não mostrar porque marcou para não ver
+  }
+  
+  // Comportamento padrão: SEMPRE mostrar (a menos que marque "não mostrar hoje")
+  const alertasOcultos = load('alertasOcultos') || {};
+  
+  // Verificar se o usuário marcou "não mostrar hoje" para hoje
+  if (alertasOcultos[hoje]) {
+    return false;
+  }
+  
+  // SEMPRE mostrar (comportamento padrão)
+  return true;
+}
+
+function gerarAlertasDiarios() {
+  const hoje = new Date().toISOString().split('T')[0];
+  const perfil = load('perfil');
+  const notas = load('notas') || {};
+  const sentimentos = load('sentimentos') || {};
+  
+  // Carregar configurações dos alertas
+  const configAlertas = load('configAlertas') || {
+    ativos: 'sempre',
+    mostrarAstrologia: true,
+    mostrarCompromissos: true,
+    mostrarFinanceiro: true
+  };
+  
+  let html = '';
+  
+  // ===== 1️⃣ EVENTOS ASTROLÓGICOS E DA NATUREZA =====
+  if (configAlertas.mostrarAstrologia) {
+    const eventosAstrologicos = [];
+    
+    // Verificar Lua
+    const luaHoje = lunacoes2026[hoje];
+    if (luaHoje) {
+      eventosAstrologicos.push({
+        icone: luaHoje.icone,
+        texto: `${luaHoje.fase} em ${luaHoje.signo}`,
+        tipo: 'lua'
+      });
+    }
+    
+    // Verificar Sabá
+    const sabaHoje = sabas2026[hoje];
+    if (sabaHoje) {
+      eventosAstrologicos.push({
+        icone: '🔥',
+        texto: `Sabá ${sabaHoje.nome}: ${sabaHoje.significado}`,
+        tipo: 'saba'
+      });
+    }
+    
+    // Verificar Solstício/Equinócio
+    const eventosSol = {
+      '2026-03-20': { nome: 'Equinócio de Outono', icone: '🍂' },
+      '2026-06-21': { nome: 'Solstício de Inverno', icone: '❄️' },
+      '2026-09-22': { nome: 'Equinócio de Primavera', icone: '🌸' },
+      '2026-12-21': { nome: 'Solstício de Verão', icone: '☀️' }
+    };
+    
+    if (eventosSol[hoje]) {
+      eventosAstrologicos.push({
+        icone: eventosSol[hoje].icone,
+        texto: eventosSol[hoje].nome,
+        tipo: 'sol'
+      });
+    }
+    
+    // Verificar Eclipse
+    const eclipses = {
+      '2026-02-17': { tipo: 'Lunar', icone: '🌑' },
+      '2026-08-12': { tipo: 'Solar', icone: '🌞' }
+    };
+    
+    if (eclipses[hoje]) {
+      eventosAstrologicos.push({
+        icone: eclipses[hoje].icone,
+        texto: `Eclipse ${eclipses[hoje].tipo}`,
+        tipo: 'eclipse'
+      });
+    }
+    
+    // Bloco de Astrologia
+    html += `<div class="alerta-bloco astrologia">`;
+    html += `<div class="alerta-titulo"><span>🌙☀️🌱</span><h4>Eventos Astrológicos e da Natureza</h4></div>`;
+    html += `<div class="alerta-conteudo">`;
+    
+    if (eventosAstrologicos.length > 0) {
+      eventosAstrologicos.forEach(evento => {
+        html += `<div class="alerta-item">${evento.icone} ${evento.texto}</div>`;
+      });
+    } else {
+      html += `<div class="sem-eventos">Hoje não há eventos astrológicos relevantes</div>`;
+    }
+    
+    html += `</div></div>`;
+  }
+  
+  // ===== 2️⃣ COMPROMISSOS DO DIA =====
+  if (configAlertas.mostrarCompromissos) {
+    html += `<div class="alerta-bloco compromissos">`;
+    html += `<div class="alerta-titulo"><span>📝🔥</span><h4>Compromissos do Dia</h4></div>`;
+    html += `<div class="alerta-conteudo">`;
+    
+    // A) Notas da usuária
+    const notasHoje = Array.isArray(notas[hoje]) ? notas[hoje] : [];
+    const sentimentosHoje = sentimentos[hoje];
+    
+    if (notasHoje.length > 0 || sentimentosHoje) {
+      if (notasHoje.length > 0) {
+        html += `<div class="alerta-item">📝 Você tem ${notasHoje.length} ${notasHoje.length === 1 ? 'registro' : 'registros'} hoje:</div>`;
+        notasHoje.slice(0, 3).forEach(nota => {
+          const textoResumido = nota.texto.length > 50 ? nota.texto.substring(0, 50) + '...' : nota.texto;
+          html += `<div class="alerta-item" style="padding-left:20px;font-size:0.9rem;">• ${nota.hora || 'Sem horário'}: ${textoResumido}</div>`;
+        });
+        if (notasHoje.length > 3) {
+          html += `<div class="alerta-item" style="font-size:0.9rem;opacity:0.8;">... e mais ${notasHoje.length - 3} registros</div>`;
+        }
+      }
+      
+      // B) Rituais recomendados (baseado na lua do dia)
+      const luaHoje = lunacoes2026[hoje];
+      if (luaHoje) {
+        const energiaFase = energiasLunares[luaHoje.fase] || {};
+        const acoes = energiaFase.acoesPositivas ? energiaFase.acoesPositivas.split(',')[0] : 'prática ritualística';
+        
+        html += `<div class="alerta-item">🔥 Ritual sugerido:</div>`;
+        html += `<div class="alerta-item" style="padding-left:20px;font-size:0.9rem;">${acoes} (${luaHoje.fase} em ${luaHoje.signo})</div>`;
+      }
+      
+      const sabaHoje = sabas2026[hoje];
+      if (sabaHoje) {
+        html += `<div class="alerta-item" style="padding-left:20px;font-size:0.9rem;">🔥 ${sabaHoje.rituais.split(',')[0]}</div>`;
+      }
+    } else {
+      html += `<div class="sem-eventos">Nenhum compromisso registrado para hoje. Adicione notas ou rituais!</div>`;
+    }
+    
+    html += `</div></div>`;
+  }
+  
+  // ===== 3️⃣ ALERTAS FINANCEIROS =====
+  if (configAlertas.mostrarFinanceiro) {
+    html += `<div class="alerta-bloco financeiro">`;
+    html += `<div class="alerta-titulo"><span>💰</span><h4>Alertas Financeiros</h4></div>`;
+    html += `<div class="alerta-conteudo">`;
+    
+    const alertasFinanceiros = [];
+    
+    // Despesas fixas não registradas (simulação)
+    const despesasFixas = ['Aluguel', 'Conta de luz', 'Internet', 'Plano de saúde'];
+    const hojeDia = new Date().getDate();
+    
+    if (hojeDia > 25) {
+      alertasFinanceiros.push('💸 Fim do mês se aproxima - revise seus gastos');
+    }
+    
+    // Alerta baseado na fase da Lua
+    const luaHoje = lunacoes2026[hoje];
+    if (luaHoje) {
+      if (luaHoje.fase === 'Lua Minguante') {
+        alertasFinanceiros.push('🌙 Lua Minguante: momento ideal para cortar gastos desnecessários');
+      } else if (luaHoje.fase === 'Lua Nova') {
+        alertasFinanceiros.push('🌑 Lua Nova: planeje metas financeiras para o ciclo');
+      } else if (luaHoje.fase === 'Lua Cheia') {
+        alertasFinanceiros.push('🌕 Lua Cheia: reveja excessos e celebre conquistas');
+      }
+    }
+    
+    // Vencimentos (simulação)
+    const vencimentos = {
+      5: ['Aluguel vence em 5 dias'],
+      10: ['Conta de luz vence em 3 dias'],
+      15: ['Plano de saúde vence hoje'],
+      20: ['Internet vence em 5 dias'],
+      25: ['Cartão de crédito vence em breve']
+    };
+    
+    for (const [dia, mensagens] of Object.entries(vencimentos)) {
+      const diff = parseInt(dia) - hojeDia;
+      if (diff > 0 && diff <= 7) {
+        mensagens.forEach(msg => alertasFinanceiros.push(`⏰ ${msg}`));
+      }
+    }
+    
+    if (alertasFinanceiros.length > 0) {
+      alertasFinanceiros.forEach(alerta => {
+        html += `<div class="alerta-item">${alerta}</div>`;
+      });
+    } else {
+      html += `<div class="sem-eventos">Nenhum alerta financeiro para hoje. Continue com o equilíbrio!</div>`;
+    }
+    
+    html += `</div></div>`;
+  }
+  
+  // Se não houver nenhum bloco ativo
+  if (html === '') {
+    html = `<div class="sem-eventos" style="text-align:center; padding:40px 20px;">
+      <p>🔕 Os alertas estão desativados nas configurações.</p>
+      <p style="font-size:0.9rem; margin-top:10px;">Você pode ativá-los novamente em "Gerenciar Alertas".</p>
+    </div>`;
+  }
+  
+  return html;
+}
+
+function mostrarAlertas() {
+  if (verificarAlertaDiario()) {
+    const alertasHTML = gerarAlertasDiarios();
+    
+    alertasConteudo.innerHTML = alertasHTML;
+    alertasDiarios.style.display = 'flex';
+    
+    // Resetar o checkbox sempre que mostrar
+    naoMostrarHoje.checked = false;
+  }
+}
+
+// Event listener para fechar alertas
+fecharAlertas.addEventListener('click', () => {
+  alertasDiarios.style.display = 'none';
+  
+  // Se marcou para não mostrar hoje, salvar preferência
+  if (naoMostrarHoje.checked) {
+    const hoje = new Date().toISOString().split('T')[0];
+    const alertasOcultos = load('alertasOcultos') || {};
+    alertasOcultos[hoje] = true;
+    save('alertasOcultos', alertasOcultos);
+    
+    // Feedback visual
+    const mensagem = document.createElement('div');
+    mensagem.innerHTML = '✅ <strong>Preferência salva!</strong><br>Alertas não serão exibidos hoje.';
+    mensagem.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--color-transformative-teal);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(mensagem);
+    
+    setTimeout(() => {
+      mensagem.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => document.body.removeChild(mensagem), 300);
+    }, 3000);
+  }
+});
+
+// ===== GERENCIAMENTO DE ALERTAS =====
+btnGerenciarAlertas.addEventListener('click', () => {
+  const configAlertas = load('configAlertas') || {
+    ativos: 'sempre',
+    mostrarAstrologia: true,
+    mostrarCompromissos: true,
+    mostrarFinanceiro: true
+  };
+  
+  // Carregar configurações atuais
+  document.getElementById('alertasAtivos').value = configAlertas.ativos;
+  document.getElementById('mostrarAstrologia').checked = configAlertas.mostrarAstrologia;
+  document.getElementById('mostrarCompromissos').checked = configAlertas.mostrarCompromissos;
+  document.getElementById('mostrarFinanceiro').checked = configAlertas.mostrarFinanceiro;
+  
+  modalAlertasConfig.style.display = 'flex';
+});
+
+btnFecharAlertasConfig.addEventListener('click', () => {
+  modalAlertasConfig.style.display = 'none';
+});
+
+btnSalvarConfigAlertas.addEventListener('click', () => {
+  const configAlertas = {
+    ativos: document.getElementById('alertasAtivos').value,
+    mostrarAstrologia: document.getElementById('mostrarAstrologia').checked,
+    mostrarCompromissos: document.getElementById('mostrarCompromissos').checked,
+    mostrarFinanceiro: document.getElementById('mostrarFinanceiro').checked
+  };
+  
+  save('configAlertas', configAlertas);
+  
+  modalAlertasConfig.style.display = 'none';
+  
+  // Feedback visual
+  const mensagem = document.createElement('div');
+  mensagem.innerHTML = '✅ <strong>Configurações salvas!</strong><br>Alertas atualizados.';
+  mensagem.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--color-transformative-teal);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease;
+  `;
+  document.body.appendChild(mensagem);
+  
+  setTimeout(() => {
+    mensagem.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => document.body.removeChild(mensagem), 300);
+  }, 3000);
+});
+
+btnLimparPreferencias.addEventListener('click', () => {
+  if (confirm('Tem certeza que deseja limpar todas as preferências de "não mostrar hoje"?\n\nIsso fará com que os alertas reapareçam conforme suas configurações atuais.')) {
+    // Limpar todas as preferências de "não mostrar hoje"
+    save('alertasOcultos', {});
+    
+    // Feedback visual
+    const mensagem = document.createElement('div');
+    mensagem.innerHTML = '✅ <strong>Preferências limpas!</strong><br>Alertas serão exibidos conforme configurações.';
+    mensagem.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--color-digital-lavender);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(mensagem);
+    
+    setTimeout(() => {
+      mensagem.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => document.body.removeChild(mensagem), 300);
+    }, 3000);
+  }
+});
 
 // ===== FLUXO DE INSTALAÇÃO =====
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -1888,6 +2419,22 @@ document.getElementById('salvar').onclick = () => {
       horaSabas: '09:00'
     });
   }
+  
+  // Configuração padrão dos alertas
+  const configAlertas = load('configAlertas');
+  if (!configAlertas) {
+    save('configAlertas', {
+      ativos: 'sempre',
+      mostrarAstrologia: true,
+      mostrarCompromissos: true,
+      mostrarFinanceiro: true
+    });
+  }
+  
+  // Mostrar alertas após login
+  setTimeout(() => {
+    mostrarAlertas();
+  }, 500);
 };
 
 btnAlterarNome.addEventListener('click', () => {
@@ -1909,6 +2456,11 @@ window.addEventListener('load', () => {
     formOverlay.style.display = 'none';
     capa.style.display = 'block';
     nomeCapa.textContent = `Salve, ${perfilSalvo.nome} ✨`;
+    
+    // Mostrar alertas diários
+    setTimeout(() => {
+      mostrarAlertas();
+    }, 1000);
   } else {
     const hasVisited = localStorage.getItem('hasVisited');
     if (!hasVisited && deferredPrompt) {
@@ -2684,54 +3236,5 @@ addLinha('florescimento');
 addLinha('centelha');
 
 </script>
-    <!-- OVERLAY DE ALERTAS DO GRIMÓRIO -->
-<div id="overlay-alertas" class="overlay-alertas">
-  <div class="overlay-conteudo">
-    <h2>🌙 Avisos do Grimório</h2>
-
-    <div id="alertas-astrologicos" class="bloco-alerta">
-      <!-- eventos astrológicos entram aqui -->
-    </div>
-
-    <div id="alertas-compromissos" class="bloco-alerta">
-      <!-- rituais, notas, compromissos -->
-    </div>
-
-    <div id="alertas-financas" class="bloco-alerta">
-      <!-- alertas financeiros -->
-    </div>
-
-    <button id="btn-fechar-overlay">Ok, entendi</button>
-  </div>
-</div>
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const hoje = new Date().toISOString().split("T")[0];
-  const exibidoHoje = localStorage.getItem("overlay_grimorio_data");
-
-  if (exibidoHoje !== hoje) {
-    document.getElementById("overlay-alertas").style.display = "flex";
-
-    // ⚠️ depois a gente conecta isso à planilha
-    document.getElementById("alertas-astrologicos").innerHTML =
-      "<strong>Eventos do dia:</strong><br>Lua ativa / Evento astrológico relevante.";
-
-    document.getElementById("alertas-compromissos").innerHTML =
-      "<strong>Rituais e compromissos:</strong><br>Ritual recomendado pelo grimório.";
-
-    document.getElementById("alertas-financas").innerHTML =
-      "<strong>Finanças:</strong><br>Você tem contas a revisar hoje.";
-  }
-
-  document.getElementById("btn-fechar-overlay").addEventListener("click", () => {
-    localStorage.setItem("overlay_grimorio_data", hoje);
-    document.getElementById("overlay-alertas").style.display = "none";
-  });
-});
-localStorage.removeItem("overlay_grimorio_data");
-
-</script>
-
-
 </body>
 </html>
