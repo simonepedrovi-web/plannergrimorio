@@ -12,62 +12,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   
   <style>
-        alert-overlay {
+      .overlay-alertas {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
-  display: flex;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 9999;
 }
 
-.alert-modal {
-  background: #fdfbf7;
-  color: #2b2b2b;
+.overlay-conteudo {
+  background: #111;
+  color: #f5f5f5;
+  max-width: 520px;
   width: 90%;
-  max-width: 420px;
-  max-height: 85vh;
+  padding: 24px;
   border-radius: 16px;
-  padding: 20px;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 0 30px rgba(255,255,255,0.1);
   font-family: system-ui, sans-serif;
 }
 
-.alert-modal h2 {
+.overlay-conteudo h2 {
   margin-top: 0;
   text-align: center;
 }
 
-.alert-section {
+.bloco-alerta {
   margin-bottom: 16px;
+  line-height: 1.6;
 }
 
-.alert-section h3 {
-  font-weight: 600;
-  opacity: 0.85;
-}
-
-.alert-section ul {
-  padding-left: 18px;
-  margin: 0;
-}
-
-.alert-section li {
-  margin-bottom: 4px;
-}
-
-.alert-btn {
+#btn-fechar-overlay {
   width: 100%;
   padding: 12px;
   border: none;
-  border-radius: 10px;
-  background: #3b3b3b;
+  border-radius: 12px;
+  background: #6b4eff;
   color: #fff;
-  font-size: 1rem;
+  font-size: 16px;
   cursor: pointer;
 }
+
+      
     /* VARIÁVEIS DE CORES - PALETA ACESSÍVEL 2026 */
     :root {
       /* Cores neutras orgânicas - PAPEL COMO PADRÃO DEFINITIVO */
@@ -865,6 +852,7 @@
     h4 { margin-bottom: 0.75rem; }
   </style>
 </head>
+    
 <body>
 
 <!-- TELA DE INSTALAÇÃO -->
@@ -927,42 +915,7 @@
     <button id="btnConfigNotificacoes" class="secondary">🔔 Configurar Notificações</button>
   </div>
 </div>
-<!-- Overlay -->
-<div id="alert-overlay" class="alert-overlay">
 
-  
-  <!-- Janela -->
-  <div class="alert-modal">
-    
-    <h2>🔔 Alertas do Dia</h2>
-
-    <!-- BLOCO 1 -->
-    <section class="alert-section">
-      <h3>🔮 Eventos do Dia</h3>
-      <ul>
-        <li>🌙 Lua Nova em Capricórnio</li>
-        <li>☀️ Sol entra em Aquário</li>
-        <li>🔥 Sabá: Imbolc</li>
-      </ul>
-    </section>
-
-    <!-- BLOCO 2 -->
-    <section class="alert-section">
-      <h3>📝 Compromissos</h3>
-      <p>Você tem 2 registros hoje.</p>
-      <p><strong>Ritual sugerido:</strong> Escrita de intenções e organização prática.</p>
-    </section>
-
-    <!-- BLOCO 3 -->
-    <section class="alert-section">
-      <h3>💰 Finanças</h3>
-      <p>Conta de luz vence hoje.</p>
-    </section>
-
-<button id="fechar-alertas" class="alert-btn">ok, entendi</button>
-
-  </div>
-    
 <!-- PLANNER -->
 <div id="planner">
   <div class="top-nav"><button id="voltarCapa" class="secondary">⟵ Capa</button></div>
@@ -1165,30 +1118,6 @@
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const hoje = new Date().toISOString().split('T')[0];
-    const ultimaExibicao = localStorage.getItem('alertas_exibidos_em');
-
-    const overlay = document.getElementById('alert-overlay');
-    const botaoFechar = document.getElementById('fechar-alertas');
-
-    // Se já mostrou hoje, não exibe
-    if (ultimaExibicao === hoje) {
-      if (overlay) overlay.style.display = 'none';
-      return;
-    }
-
-    // Caso contrário, mostra o alerta
-    if (overlay) overlay.style.display = 'flex';
-
-    // Ao fechar, salva a data
-    if (botaoFechar) {
-      botaoFechar.addEventListener('click', () => {
-        localStorage.setItem('alertas_exibidos_em', hoje);
-        overlay.style.display = 'none';
-      });
-    }
-  });
 // ===== VARIÁVEIS GLOBAIS =====
 let deferredPrompt = null;
 
@@ -2755,5 +2684,54 @@ addLinha('florescimento');
 addLinha('centelha');
 
 </script>
+    <!-- OVERLAY DE ALERTAS DO GRIMÓRIO -->
+<div id="overlay-alertas" class="overlay-alertas">
+  <div class="overlay-conteudo">
+    <h2>🌙 Avisos do Grimório</h2>
+
+    <div id="alertas-astrologicos" class="bloco-alerta">
+      <!-- eventos astrológicos entram aqui -->
+    </div>
+
+    <div id="alertas-compromissos" class="bloco-alerta">
+      <!-- rituais, notas, compromissos -->
+    </div>
+
+    <div id="alertas-financas" class="bloco-alerta">
+      <!-- alertas financeiros -->
+    </div>
+
+    <button id="btn-fechar-overlay">Ok, entendi</button>
+  </div>
+</div>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hoje = new Date().toISOString().split("T")[0];
+  const exibidoHoje = localStorage.getItem("overlay_grimorio_data");
+
+  if (exibidoHoje !== hoje) {
+    document.getElementById("overlay-alertas").style.display = "flex";
+
+    // ⚠️ depois a gente conecta isso à planilha
+    document.getElementById("alertas-astrologicos").innerHTML =
+      "<strong>Eventos do dia:</strong><br>Lua ativa / Evento astrológico relevante.";
+
+    document.getElementById("alertas-compromissos").innerHTML =
+      "<strong>Rituais e compromissos:</strong><br>Ritual recomendado pelo grimório.";
+
+    document.getElementById("alertas-financas").innerHTML =
+      "<strong>Finanças:</strong><br>Você tem contas a revisar hoje.";
+  }
+
+  document.getElementById("btn-fechar-overlay").addEventListener("click", () => {
+    localStorage.setItem("overlay_grimorio_data", hoje);
+    document.getElementById("overlay-alertas").style.display = "none";
+  });
+});
+localStorage.removeItem("overlay_grimorio_data");
+
+</script>
+
+
 </body>
 </html>
