@@ -598,7 +598,7 @@
       padding: 24px;
       border-radius: var(--border-radius-lg);
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       box-sizing: border-box;
       margin: 0 auto;
       max-height: 90vh;
@@ -831,6 +831,10 @@
       /* Aumenta o tamanho da fonte para tablets */
       body {
         font-size: 1.0625rem;
+      }
+      
+      #modal > div {
+        max-width: 700px;
       }
     }
 
@@ -2811,70 +2815,243 @@ function determinarFaseCiclo(dataISO) {
   }
 }
 
+// ===== FUNÇÃO AVALIAR DIA - VERSÃO CONVERSACIONAL COMPLETA =====
 function avaliarDia(dataISO) {
   const perfil = load('perfil') || {};
   const lua = lunacoes2026[dataISO];
   const saba = sabas2026[dataISO];
+  const dataObj = new Date(dataISO);
+  const partesData = dataISO.split('-');
+  const diaNum = parseInt(partesData[2]);
   
-  let oraculoHTML = '';
-  
-  if (saba) {
-    oraculoHTML += `<strong>🔥 Hoje é dia do Sabá ${saba.nome} (${saba.tipo}).</strong><br>`;
-    oraculoHTML += `Dia de celebrar ${saba.estacaoElemento.toLowerCase()}.<br><br>`;
-  }
-  
-  if (lua) {
-  const energiaFase = energiasLunares[lua.fase] || {};
-  const energiaSigno = energiaSignoLunar[lua.signo] || {};
-  
-  oraculoHTML += `<strong>🌙 Lua ${lua.fase} em ${lua.signo}:</strong><br>`;
-  oraculoHTML += `Dia de ${energiaFase.energiaPrincipal || 'energia lunar'}. `;
-  oraculoHTML += `Momento para ${energiaSigno[lua.fase] || 'alinhar-se com a energia do signo'}.<br><br>`;
-} else {
-    oraculoHTML += `<strong>🌙 Lua em trânsito:</strong><br>`;
-    oraculoHTML += `Continuidade do ciclo lunar em andamento.<br><br>`;
-  }
-  
-  oraculoHTML += `<strong>⚡ Energia do dia:</strong><br>`;
-  
+  // Calcular ano pessoal
   const numeroEnergia = calcularNumeroEnergia(dataISO);
-  if (numeroEnergia && energiaNumerologia[numeroEnergia]) {
-    const energiaNum = energiaNumerologia[numeroEnergia];
-    oraculoHTML += `${energiaNum.potencial}. `;
-    oraculoHTML += `Atenção para ${energiaNum.risco.toLowerCase()}.<br>`;
-  }
+  const energiaNum = numeroEnergia ? energiaNumerologia[numeroEnergia] : null;
   
+  // Determinar fase do ciclo menstrual
   const faseCiclo = determinarFaseCiclo(dataISO);
-  if (lua && faseCiclo && cicloMenstrualFaseLunar[lua.fase] && cicloMenstrualFaseLunar[lua.fase][faseCiclo]) {
-    oraculoHTML += `Você poderá se sentir ${cicloMenstrualFaseLunar[lua.fase][faseCiclo].toLowerCase()}<br><br>`;
-  } else if (lua && !perfil.ciclo) {
-    const energiaFase = energiasLunares[lua.fase] || {};
-    oraculoHTML += `Dia para focar em ${energiaFase.acoesPositivas ? energiaFase.acoesPositivas.split(',')[0] : 'harmonia interna'}.<br><br>`;
-  } else {
-    oraculoHTML += `Atenção às suas necessidades internas hoje.<br><br>`;
-  }
+  const faseCicloTexto = faseCiclo === 'menstruacao' ? 'Menstruação (Inverno Interno)' :
+                        faseCiclo === 'pre_ovulacao' ? 'Pré-Ovulação (Primavera Interna)' :
+                        faseCiclo === 'ovulacao' ? 'Ovulação (Verão Interno)' :
+                        faseCiclo === 'pre_menstrual' ? 'Pré-Menstrual (Outono Interno)' : null;
   
-  oraculoHTML += `<strong>✨ Ritual sugerido:</strong><br>`;
-  if (saba) {
-    oraculoHTML += `Dia de ${saba.rituais.split(',')[0]} e `;
-  }
+  // Mapear arquétipos
+  const arquétipoFase = {
+    'menstruacao': 'A Anciã/Bruxa Sábia',
+    'pre_ovulacao': 'A Donzela/Jovem',
+    'ovulacao': 'A Mãe/Nutridora',
+    'pre_menstrual': 'A Feiticeira/Mulher Selvagem'
+  };
   
+  // Fase do ciclo em português para exibição
+  const faseCicloExibicao = faseCiclo === 'menstruacao' ? 'menstruação' :
+                           faseCiclo === 'pre_ovulacao' ? 'pré-ovulação' :
+                           faseCiclo === 'ovulacao' ? 'ovulação' :
+                           faseCiclo === 'pre_menstrual' ? 'pré-menstrual' : null;
+  
+  // Iniciar conversa
+  let oraculoHTML = `<div style="font-family: var(--font-body); line-height: 1.7;">`;
+  
+  // Saudação personalizada
+  oraculoHTML += `<div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--color-digital-lavender);">
+    <h4 style="color: var(--color-transformative-teal); margin: 0 0 8px 0;">✨ Salve, ${perfil.nome || 'Bruxa'} ✨</h4>
+    <p style="margin: 0; color: var(--color-text-secondary); font-size: 0.95rem;">Vamos conversar sobre a energia deste dia especial...</p>
+  </div>`;
+  
+  // 🌙 FASE LUNAR
   if (lua) {
-    if (lua.fase === 'Lua Cheia') {
-      oraculoHTML += 'ritual de gratidão, escrita consciente e celebração simbólica.';
-    } else if (lua.fase === 'Lua Nova') {
-      oraculoHTML += 'plantio de intenções, silêncio ritual e visualização.';
-    } else if (lua.fase === 'Lua Crescente') {
-      oraculoHTML += 'ações progressivas, fortalecimento de hábitos e foco.';
-    } else if (lua.fase === 'Lua Minguante') {
-      oraculoHTML += 'limpeza energética, desapego e descanso consciente.';
-    } else {
-      oraculoHTML += 'prática simples de autocuidado e observação.';
-    }
+    const energiaFase = energiasLunares[lua.fase] || {};
+    const energiaSigno = energiaSignoLunar[lua.signo] || {};
+    
+    oraculoHTML += `<div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 1.5rem;">${lua.icone || '🌙'}</span>
+        <h5 style="margin: 0; color: var(--color-transformative-teal);">${lua.fase} em ${lua.signo}</h5>
+      </div>
+      <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+        <strong>O que isso significa para você:</strong><br>
+        Estamos na fase da ${lua.fase.toLowerCase()}, um momento de <em>${energiaFase.energiaPrincipal || 'transformação energética'}</em>. 
+        Com a Lua em ${lua.signo}, ${energiaSigno[lua.fase] ? energiaSigno[lua.fase].toLowerCase() : 'você pode sentir uma conexão especial com este signo'}.
+      </p>
+      <div style="background: rgba(181, 168, 255, 0.1); padding: 12px; border-radius: 8px; margin-top: 8px;">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-secondary);">
+          <strong>💫 Sua potência lunar hoje:</strong><br>
+          ${energiaFase.acoesPositivas ? energiaFase.acoesPositivas.split(',')[0] : 'Momento de conexão interior'}
+        </p>
+      </div>
+    </div>`;
   } else {
-    oraculoHTML += 'prática simples de autocuidado e observação.';
+    oraculoHTML += `<div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 1.5rem;">🌙</span>
+        <h5 style="margin: 0; color: var(--color-transformative-teal);">Lua em Trânsito</h5>
+      </div>
+      <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+        <strong>Momento de fluxo contínuo:</strong><br>
+        A Lua está caminhando entre fases, um período para continuar o que começou e observar os desdobramentos naturais.
+      </p>
+    </div>`;
   }
   
+  // 🔥 SABÁS E ESTAÇÕES
+  if (saba) {
+    oraculoHTML += `<div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 1.5rem;">🔥</span>
+        <h5 style="margin: 0; color: var(--color-sunset-amber);">${saba.nome} - ${saba.tipo}</h5>
+      </div>
+      <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+        <strong>Celebração da Roda do Ano:</strong><br>
+        Hoje é um ${saba.tipo === 'Sabá Maior' ? 'grande' : 'especial'} Sabá de ${saba.estacaoElemento.split('/')[1].toLowerCase()}, 
+        marcando ${saba.significado.toLowerCase()}.
+      </p>
+      <div style="background: rgba(255, 138, 80, 0.1); padding: 12px; border-radius: 8px; margin-top: 8px;">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-secondary);">
+          <strong>🎯 Ritual integrado:</strong><br>
+          ${saba.rituais ? saba.rituais.split(',')[0] : 'Momento de celebração e gratidão'}
+        </p>
+      </div>
+    </div>`;
+  }
+  
+  // 💫 ANO PESSOAL (NUMEROLOGIA)
+  if (energiaNum && perfil.ano) {
+    oraculoHTML += `<div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 1.5rem;">🔢</span>
+        <h5 style="margin: 0; color: var(--color-mystic-purple);">Ano Pessoal ${perfil.ano} - Energia ${numeroEnergia}</h5>
+      </div>
+      <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+        <strong>Sua vibração numérica hoje:</strong><br>
+        O número ${numeroEnergia} traz <em>${energiaNum.potencial.toLowerCase()}</em> para seu dia.
+      </p>
+      <div style="background: rgba(126, 87, 194, 0.1); padding: 12px; border-radius: 8px; margin-top: 8px;">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-secondary);">
+          <strong>⚡ Atenção energética:</strong><br>
+          Cuidado com ${energiaNum.risco.toLowerCase()}. Respire fundo antes de decisões importantes.
+        </p>
+      </div>
+    </div>`;
+  }
+  
+  // 🩸 CICLO MENSTRUAL
+  if (faseCicloTexto && perfil.ciclo) {
+    const arquetipo = arquétipoFase[faseCiclo] || '';
+    const faseDescricao = faseCiclo === 'menstruacao' ? 
+      "Você está em seu 'inverno interno' - tempo de recolhimento profundo e sabedoria intuitiva." :
+      faseCiclo === 'pre_ovulacao' ? 
+      "Você está em sua 'primavera interna' - energia de renovação e novos começos florescendo." :
+      faseCiclo === 'ovulacao' ? 
+      "Você está em seu 'verão interno' - plenitude, magnetismo e capacidade de nutrir." :
+      "Você está em seu 'outono interno' - momento de colheita, discernimento e preparação.";
+    
+    oraculoHTML += `<div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <span style="font-size: 1.5rem;">🌺</span>
+        <h5 style="margin: 0; color: var(--color-deep-teal);">${faseCicloTexto} - ${arquetipo}</h5>
+      </div>
+      <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+        <strong>Sua mandala corporal hoje:</strong><br>
+        ${faseDescricao}
+      </p>
+      <div style="background: rgba(42, 122, 122, 0.1); padding: 12px; border-radius: 8px; margin-top: 8px;">
+        <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-secondary);">
+          <strong>🌸 Cuidado necessário:</strong><br>
+          ${faseCiclo === 'menstruacao' ? 'Honre seu ritmo lento. Descanse e ouça sua intuição mais profunda.' :
+            faseCiclo === 'pre_ovulacao' ? 'Aproveite sua energia crescente para planejar e iniciar projetos.' :
+            faseCiclo === 'ovulacao' ? 'Compartilhe sua luz, mas mantenha seus limites energéticos.' :
+            'Use sua intuição aguçada para discernir o que realmente importa.'}
+        </p>
+      </div>
+    </div>`;
+  }
+  
+  // 💎 RESUMO DA POTÊNCIA DO DIA
+  oraculoHTML += `<div style="margin-top: 24px; padding: 20px; background: linear-gradient(135deg, rgba(181, 168, 255, 0.1), rgba(42, 122, 122, 0.1)); border-radius: 12px; border-left: 4px solid var(--color-digital-lavender);">
+    <h5 style="margin: 0 0 16px 0; color: var(--color-transformative-teal); text-align: center;">💎 SUA POTÊNCIA HOJE</h5>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+      <div style="text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">${lua ? lua.icone : '🌙'}</div>
+        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">${lua ? lua.fase : 'Lua em trânsito'}</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 8px;">${energiaNum ? '🔢' : '⚡'}</div>
+        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">${energiaNum ? `Energia ${numeroEnergia}` : 'Fluxo energético'}</div>
+      </div>
+    </div>
+    
+    <p style="margin: 0 0 12px 0; color: var(--color-text-primary); text-align: center; font-style: italic;">
+      "Hoje você pode estar especialmente..."
+    </p>
+    
+    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+      <span style="background: var(--color-digital-lavender); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem;">
+        ${lua && energiasLunares[lua.fase] ? energiasLunares[lua.fase].acoesPositivas.split(',')[0].trim() : 'Presente'}
+      </span>
+      <span style="background: var(--color-transformative-teal); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem;">
+        ${energiaNum ? energiaNum.potencial.split(',')[0].trim() : 'Energizada'}
+      </span>
+      ${faseCiclo ? 
+        `<span style="background: var(--color-mystic-purple); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem;">
+          ${faseCiclo === 'menstruacao' ? 'Intuitiva' : 
+            faseCiclo === 'pre_ovulacao' ? 'Renovada' : 
+            faseCiclo === 'ovulacao' ? 'Magnetizadora' : 'Discernente'}
+        </span>` : ''
+      }
+    </div>
+  </div>`;
+  
+  // 🕯️ RITUAL SUGERIDO
+  oraculoHTML += `<div style="margin-top: 20px; padding: 20px; background: var(--color-parchment); border-radius: 12px; border: 2px dashed var(--color-transformative-teal);">
+    <h5 style="margin: 0 0 16px 0; color: var(--color-transformative-teal); text-align: center;">🕯️ RITUAL CONECTIVO PARA HOJE</h5>
+    
+    <p style="margin: 0 0 12px 0; color: var(--color-text-primary);">
+      <strong>Para harmonizar todas essas energias:</strong>
+    </p>
+    
+    <ol style="margin: 0; padding-left: 20px; color: var(--color-text-secondary);">
+      <li style="margin-bottom: 8px;">
+        <strong>Respire e centre-se</strong> (1 minuto): Sente-se confortavelmente e respire profundamente 3 vezes.
+      </li>
+      <li style="margin-bottom: 8px;">
+        <strong>Reconheça sua fase</strong>: Toque suavemente seu ventre e agradeça ao seu ciclo, seja ele qual for hoje.
+      </li>
+      <li style="margin-bottom: 8px;">
+        <strong>Alinhe-se com a Lua</strong>: Visualize a ${lua ? lua.fase.toLowerCase() : 'energia lunar'} envolvendo você com ${lua ? lua.signo.toLowerCase() : 'proteção'}.
+      </li>
+      ${saba ? 
+        `<li style="margin-bottom: 8px;">
+          <strong>Celebre o Sabá</strong>: Acenda uma vela e pense em ${saba.significado.split('.')[0].toLowerCase()}.
+        </li>` : ''
+      }
+      <li style="margin-bottom: 8px;">
+        <strong>Afirmação pessoal</strong>: Repita: "Hoje honro minha potência única e flui com sabedoria."
+      </li>
+    </ol>
+    
+    <div style="margin-top: 16px; padding: 12px; background: white; border-radius: 8px; border-left: 4px solid var(--color-digital-lavender);">
+      <p style="margin: 0; font-size: 0.9rem; color: var(--color-text-secondary); font-style: italic;">
+        <strong>💝 Lembre-se:</strong> Sua vulnerabilidade hoje também é sua força. 
+        ${faseCiclo === 'menstruacao' ? 'A quietude traz insights profundos.' :
+          faseCiclo === 'pre_menstrual' ? 'A sensibilidade revela verdades necessárias.' :
+          'Cada emoção é uma mensagem do seu ser interior.'}
+      </p>
+    </div>
+  </div>`;
+  
+  // 🎯 ENCERRAMENTO CONECTIVO
+  oraculoHTML += `<div style="margin-top: 20px; text-align: center; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.1);">
+    <p style="margin: 0; color: var(--color-text-secondary); font-size: 0.95rem;">
+      Que hoje você encontre equilíbrio entre ação e descanso, entre dar e receber.
+    </p>
+    <p style="margin: 12px 0 0 0; color: var(--color-mystic-purple); font-weight: 500; font-size: 1.1rem;">
+      Com amor lunar,<br>
+      <span style="color: var(--color-transformative-teal);">Seu Grimório Ritualístico</span>
+    </p>
+  </div>`;
+  
+  oraculoHTML += `</div>`;
   return oraculoHTML;
 }
 
