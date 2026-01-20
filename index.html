@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planner Ritualístico — Grimório Completo</title>
   <link rel="manifest" href="manifest.json">
-  
+  <!-- Adicione ESTA linha no <head>, ANTES do seu CSS -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <!-- Fontes otimizadas para leitura -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3502,41 +3503,107 @@ async function enviarDadosParaServiceWorker() {
   });
 }
 
-// Gerar QR Code com dados
+// Função CORRIGIDA para gerar QR Code
 function gerarQRCode() {
-  // Coletar todos os dados
+  // Coletar todos os dados do localStorage
   const todosDados = {};
   for (let i = 0; i < localStorage.length; i++) {
     const chave = localStorage.key(i);
-    todosDados[chave] = localStorage.getItem(chave);
+    try {
+      const valor = localStorage.getItem(chave);
+      todosDados[chave] = valor;
+    } catch (e) {
+      console.warn(`Não foi possível ler a chave ${chave}`, e);
+    }
   }
   
-  // Comprimir dados para URL menor
-  const dadosString = JSON.stringify(todosDados);
-  const dadosCodificados = btoa(encodeURIComponent(dadosString));
+  // Verificar se há dados
+  if (Object.keys(todosDados).length === 0) {
+    alert('❌ Não há dados para exportar! Adicione algumas notas primeiro.');
+    return;
+  }
   
-  // Criar URL para o QR Code
-  const url = `${window.location.origin}${window.location.pathname}?import=${dadosCodificados}`;
+  // Converter para JSON
+  const dadosJSON = JSON.stringify(todosDados);
+  console.log('Dados para QR Code:', dadosJSON.length, 'caracteres');
   
-  // Criar modal com QR Code
+  // TESTE: Mostrar que temos dados
+  console.log('Chaves disponíveis:', Object.keys(todosDados));
+  
+  // Codificar para URL (usando método mais simples)
+  const dadosCodificados = btoa(unescape(encodeURIComponent(dadosJSON)));
+  
+  // Criar URL para este app
+  const urlBase = window.location.origin + window.location.pathname;
+  const urlComDados = `${urlBase}?importar=${dadosCodificados}`;
+  
+  console.log('URL gerada:', urlComDados.length, 'caracteres');
+  
+  // Criar modal
+  criarModalQRCode(urlComDados, dadosJSON);
+}
+
+// Função para criar o modal com QR Code
+function criarModalQRCode(url, dadosJSON) {
+  // Remover modal existente
+  const modalExistente = document.getElementById('modalQRCode');
+  if (modalExistente) modalExistente.remove();
+  
+  // Criar novo modal
   const modalHTML = `
-    <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;">
-      <div style="background:white; padding:30px; border-radius:20px; text-align:center; max-width:90%;">
-        <h3 style="color:var(--color-transformative-teal); margin-bottom:20px;">📱 QR Code para Celular</h3>
+    <div id="modalQRCode" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    ">
+      <div style="
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        border: 3px solid var(--color-digital-lavender);
+      ">
+        <h3 style="color: var(--color-transformative-teal); margin-bottom: 15px;">
+          📱 QR Code para Celular
+        </h3>
         
-        <div id="qrcodeContainer" style="margin:20px auto; width:250px; height:250px;"></div>
-        
-        <p style="font-size:0.9rem; color:#666; margin:20px 0;">
-          1. Abra o app no celular<br>
-          2. Toque em "Importar Backup"<br>
-          3. Escaneie este QR Code
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">
+          Escaneie com a câmera do celular
         </p>
         
-        <div style="display:flex; gap:10px; justify-content:center;">
-          <button onclick="copiarLink()" class="secondary" style="padding:10px 20px;">
-            📋 Copiar Link
+        <!-- Container do QR Code -->
+        <div id="qrcodeCanvas" style="
+          margin: 20px auto;
+          padding: 15px;
+          background: white;
+          border-radius: 10px;
+          border: 2px solid #eee;
+          display: inline-block;
+        "></div>
+        
+        <div style="margin-top: 20px; font-size: 0.8rem; color: #777;">
+          <p>📊 ${Object.keys(JSON.parse(dadosJSON)).length} itens para transferir</p>
+          <p>📱 Ambos devem estar no mesmo app</p>
+        </div>
+        
+        <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: center;">
+          <button onclick="copiarDadosParaTransferencia()" 
+                  style="background: var(--color-transformative-teal); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.9rem;">
+            📋 Copiar Dados
           </button>
-          <button onclick="fecharModal()" style="background:var(--color-sunset-amber); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">
+          <button onclick="fecharModalQRCode()" 
+                  style="background: #f0f0f0; color: #333; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.9rem;">
             Fechar
           </button>
         </div>
@@ -3544,163 +3611,79 @@ function gerarQRCode() {
     </div>
   `;
   
-  const modalDiv = document.createElement('div');
-  modalDiv.innerHTML = modalHTML;
-  modalDiv.id = 'modalQR';
-  document.body.appendChild(modalDiv);
+  // Adicionar ao body
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
   
-  // Gerar QR Code
+  // Gerar QR Code APÓS o modal ser adicionado ao DOM
   setTimeout(() => {
-    if (typeof QRCode !== 'undefined') {
-      new QRCode(document.getElementById("qrcodeContainer"), {
-        text: url,
-        width: 250,
-        height: 250,
-        colorDark: "#2a7a7a",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+    const container = document.getElementById('qrcodeCanvas');
+    if (container && typeof QRCode !== 'undefined') {
+      try {
+        // Limpar container primeiro
+        container.innerHTML = '';
+        
+        // Gerar QR Code
+        new QRCode(container, {
+          text: url,
+          width: 200,
+          height: 200,
+          colorDark: "#2a7a7a",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        
+        console.log('✅ QR Code gerado com sucesso!');
+        
+      } catch (error) {
+        console.error('❌ Erro ao gerar QR Code:', error);
+        container.innerHTML = `
+          <div style="color: red; padding: 20px;">
+            ❌ Erro ao gerar QR Code<br>
+            <small>${error.message}</small>
+          </div>
+        `;
+      }
+    } else {
+      console.error('❌ Container não encontrado ou QRCode não carregado');
+      if (!container) console.error('Container #qrcodeCanvas não existe');
+      if (typeof QRCode === 'undefined') console.error('QRCode library not loaded');
     }
   }, 100);
-  
-  // Adicionar função global para copiar
-  window.copiarLink = function() {
-    navigator.clipboard.writeText(url)
-      .then(() => alert('✅ Link copiado! Cole no celular.'))
-      .catch(() => alert('❌ Não foi possível copiar'));
-  };
-  
-  window.fecharModal = function() {
-    document.getElementById('modalQR').remove();
-  };
 }
 
-// Importar backup (para ler QR Code do celular)
-function importarBackup() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json,.txt';
-  
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    
-    reader.onload = (event) => {
-      try {
-        const dados = JSON.parse(event.target.result);
-        
-        if (confirm(`Importar ${Object.keys(dados).length} itens?`)) {
-          localStorage.clear();
-          
-          for (const [chave, valor] of Object.entries(dados)) {
-            localStorage.setItem(chave, valor);
-          }
-          
-          mostrarStatus('✅ Dados importados! Recarregando...', 'success');
-          setTimeout(() => location.reload(), 1500);
-        }
-      } catch (error) {
-        alert('❌ Arquivo inválido. Use um backup .json do Grimório.');
-      }
-    };
-    
-    reader.readAsText(file);
-  };
-  
-  input.click();
-}
-
-// Mostrar status na interface
-function mostrarStatus(mensagem, tipo = 'info') {
-  const statusDiv = document.getElementById('syncStatus');
-  if (statusDiv) {
-    statusDiv.textContent = mensagem;
-    statusDiv.style.display = 'block';
-    
-    // Cores
-    const cores = {
-      loading: 'linear-gradient(135deg, #2a7a7a, #0d2b2e)',
-      success: 'linear-gradient(135deg, #2a7a7a, #1a5a5a)',
-      error: 'linear-gradient(135deg, #ff8a50, #e67a3a)',
-      warning: 'linear-gradient(135deg, #ffb74d, #f57c00)',
-      info: 'var(--color-parchment)'
-    };
-    
-    statusDiv.style.background = cores[tipo] || cores.info;
-    statusDiv.style.color = tipo === 'info' ? 'var(--color-text-secondary)' : 'white';
-    
-    // Auto-esconder
-    if (tipo === 'success' || tipo === 'error') {
-      setTimeout(() => {
-        statusDiv.style.display = 'none';
-      }, 5000);
-    }
+// Função para copiar dados
+window.copiarDadosParaTransferencia = function() {
+  const todosDados = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const chave = localStorage.key(i);
+    todosDados[chave] = localStorage.getItem(chave);
   }
-}
-
-// Escutar mensagens do Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', event => {
-    const { type, data } = event.data;
-    
-    if (type === 'SYNC_DATA_AVAILABLE') {
-      console.log('📥 Dados recebidos do Service Worker:', data);
-      mostrarStatus('🔄 Dados recebidos de outra aba', 'info');
-    }
-    
-    if (type === 'REQUEST_DATA_FOR_SYNC') {
-      // Responder ao Service Worker com os dados
-      const todosDados = {};
-      for (let i = 0; i < localStorage.length; i++) {
-        const chave = localStorage.key(i);
-        todosDados[chave] = localStorage.getItem(chave);
-      }
-      
-      event.ports[0].postMessage({
-        success: true,
-        data: todosDados
-      });
-    }
-  });
-}
-
-// Verificar se há dados para importar na URL (do QR Code)
-function verificarImportacaoURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const dadosImport = urlParams.get('import');
   
-  if (dadosImport) {
-    try {
-      const dadosString = decodeURIComponent(atob(dadosImport));
-      const dados = JSON.parse(dadosString);
-      
-      if (confirm(`📥 Encontrados dados para importar (${Object.keys(dados).length} itens). Deseja importar?`)) {
-        localStorage.clear();
-        
-        for (const [chave, valor] of Object.entries(dados)) {
-          localStorage.setItem(chave, valor);
-        }
-        
-        // Limpar URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        mostrarStatus('✅ Dados importados! Recarregando...', 'success');
-        setTimeout(() => location.reload(), 1500);
-      } else {
-        // Limpar URL sem importar
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    } catch (error) {
-      console.error('Erro ao importar dados:', error);
-    }
-  }
-}
+  const dadosJSON = JSON.stringify(todosDados, null, 2);
+  
+  navigator.clipboard.writeText(dadosJSON)
+    .then(() => {
+      alert('✅ Dados copiados! Cole no celular na opção "Importar Backup".');
+    })
+    .catch(err => {
+      console.error('Erro ao copiar:', err);
+      // Fallback para textarea
+      const textarea = document.createElement('textarea');
+      textarea.value = dadosJSON;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert('✅ Dados copiados (método alternativo)!');
+    });
+};
 
-// Inicializar
-setTimeout(() => {
-  adicionarInterfaceSincronizacao();
-  verificarImportacaoURL();
-}, 2000);
+// Função para fechar modal
+window.fecharModalQRCode = function() {
+  const modal = document.getElementById('modalQRCode');
+  if (modal) modal.remove();
+};
+  
 </script>
 </body>
 </html>
